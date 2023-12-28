@@ -18,7 +18,7 @@ class _AppState extends State<App> {
   bool useMaterial3 = true;
   ThemeMode themeMode = ThemeMode.system;
   ColorSeed colorSelected = ColorSeed.teal;
-  ColorScheme? colorScheme = const ColorScheme.light();
+  ColorScheme? colorScheme = const ColorScheme.highContrastDark();
 
   bool get useLightMode {
     switch (themeMode) {
@@ -51,9 +51,6 @@ class _AppState extends State<App> {
       title: 'PuzzlePro',
       themeMode: themeMode,
       theme: ThemeData(
-        textTheme: GoogleFonts.muktaTextTheme(
-          Theme.of(context).textTheme,
-        ),
         colorSchemeSeed: colorSelected.color,
         useMaterial3: true,
         brightness: Brightness.light,
