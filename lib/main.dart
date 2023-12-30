@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/constants.dart';
 import 'package:puzzlepro_app/home.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   runApp(const App());
 }
 
