@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:puzzlepro_app/Widgets/sudoku_widget.dart';
 import 'package:puzzlepro_app/constants.dart';
+import 'package:puzzlepro_app/models/sudoku.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -96,7 +98,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: const Text("PuzzlePro", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0,),),
       ),
-      // body: setScreen(ScreenSelected.values[screenIndex]),
+      body: SudokuWidget(sudoku:  Sudoku([[0]], true, "Hard"), onSelected: () => print("hello"),  ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
