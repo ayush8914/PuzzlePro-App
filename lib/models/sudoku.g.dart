@@ -18,18 +18,20 @@ class SudokuAdapter extends TypeAdapter<Sudoku> {
     };
     return Sudoku(
       (fields[0] as List).map((dynamic e) => (e as List).cast<int>()).toList(),
+      fields[5] as bool,
+      fields[6] as String,
     )
       ..addedDigits = (fields[2] as List?)
           ?.map((dynamic e) => (e as List).cast<int>())
           ?.toList()
-      ..lastViewed = fields[3] as DateTime?
-      ..isComplete = fields[4] as bool?;
+      ..lastViewed = fields[3] as DateTime
+      ..isComplete = fields[4] as bool;
   }
 
   @override
   void write(BinaryWriter writer, Sudoku obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.originalSudoku)
       ..writeByte(1)
@@ -39,7 +41,11 @@ class SudokuAdapter extends TypeAdapter<Sudoku> {
       ..writeByte(3)
       ..write(obj.lastViewed)
       ..writeByte(4)
-      ..write(obj.isComplete);
+      ..write(obj.isComplete)
+      ..writeByte(5)
+      ..write(obj.isScanned)
+      ..writeByte(6)
+      ..write(obj.difficulty);
   }
 
   @override
