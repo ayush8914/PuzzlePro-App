@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:puzzlepro_app/Widgets/sudoku_list.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_widget.dart';
-import 'package:puzzlepro_app/constants.dart';
+import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/models/sudoku.dart';
 
 class Home extends StatefulWidget {
@@ -8,28 +9,28 @@ class Home extends StatefulWidget {
     super.key,
     required this.useLightMode,
     required this.useMaterial3,
-    required this.colorSelected,
     required this.handleBrightnessChange,
     required this.handleColorSelect,
+    required this.setTitle,
   });
 
   final bool useLightMode;
   final bool useMaterial3;
-  final ColorSeed colorSelected;
   final void Function(bool useLightMode) handleBrightnessChange;
   final void Function(int value) handleColorSelect;
+  final void Function(String newTitle) setTitle;
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int screenIndex = ScreenSelected.home.value;
   bool controllerInitialized = false;
   bool showMediumSizeLayout = false;
   bool showLargeSizeLayout = false;
 
+  final List<Sudoku> sudokuList = [Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard")];
   void handleScreenChanged(int screenSelected) {
     setState(() {
       screenIndex = screenSelected;
@@ -94,11 +95,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ),
     ];
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: const Text("PuzzlePro", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0,),),
       ),
-      body: SudokuWidget(sudoku:  Sudoku([[0]], true, "Hard"), onSelected: () => print("hello"),  ),
+      body: SudokuListView(sudokuList: sudokuList),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {

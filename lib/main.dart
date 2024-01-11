@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:puzzlepro_app/constants.dart';
-import 'package:puzzlepro_app/home.dart';
+import 'package:puzzlepro_app/Data/constants.dart';
+import 'package:puzzlepro_app/pages/home.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -48,9 +48,16 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    String title = "PuzzlePro";
+
+    void setTitle(String newTitle){
+      setState(() {
+        title = newTitle;
+      });
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PuzzlePro',
+      title: title,
       themeMode: themeMode,
       theme: ThemeData(
         colorSchemeSeed: colorSelected.color,
@@ -65,9 +72,9 @@ class _AppState extends State<App> {
       home: Home(
         useLightMode: useLightMode,
         useMaterial3: useMaterial3,
-        colorSelected: colorSelected,
         handleBrightnessChange: handleBrightnessChange,
         handleColorSelect: handleColorSelect,
+        setTitle: setTitle,
       ),
     );
   }
