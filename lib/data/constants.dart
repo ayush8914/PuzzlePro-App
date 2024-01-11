@@ -20,6 +20,12 @@ enum ColorSeed {
   final Color color;
 }
 
+enum ManualThemes{
+  darkTheme(
+
+  )
+}
+
 enum ScreenSelected {
   home(0),
   scanner(1),
@@ -28,4 +34,10 @@ enum ScreenSelected {
 
   const ScreenSelected(this.value);
   final int value;
+}
+
+enum ItemFilter {
+  all,
+  incomplete,
+  completed,
 }
