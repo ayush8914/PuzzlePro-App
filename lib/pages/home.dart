@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_list.dart';
-import 'package:puzzlepro_app/Widgets/sudoku_widget.dart';
-import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/models/sudoku.dart';
 
 class Home extends StatefulWidget {
@@ -27,7 +25,17 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
 
-  final List<Sudoku> sudokuList = [Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard")];
+  final List<Sudoku> sudokuList = [Sudoku([
+  [5, 3, 0, 0, 7, 0, 0, 0, 0],
+  [6, 0, 0, 1, 9, 5, 0, 0, 0],
+  [0, 9, 8, 0, 0, 0, 0, 6, 0],
+  [8, 0, 0, 0, 6, 0, 0, 0, 3],
+  [4, 0, 0, 8, 0, 3, 0, 0, 1],
+  [7, 0, 0, 0, 2, 0, 0, 0, 6],
+  [0, 6, 0, 0, 0, 0, 2, 8, 0],
+  [0, 0, 0, 4, 1, 9, 0, 0, 5],
+  [0, 0, 0, 0, 8, 0, 0, 7, 9],
+  ], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard"),Sudoku([[0]], false, "Hard")];
 
   @override
   Widget build(BuildContext context) {

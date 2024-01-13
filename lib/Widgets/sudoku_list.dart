@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_widget.dart';
 import 'package:puzzlepro_app/models/sudoku.dart';
+import 'package:puzzlepro_app/pages/sudoku_home.dart';
 
 enum ItemFilter { all, incomplete, completed }
 
@@ -88,7 +89,9 @@ class _SudokuListViewState extends State<SudokuListView> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: SudokuWidget(
                         sudoku: getFilteredItems()[index],
-                        onSelected: () => print("hello"),
+                        onSelected: () =>{
+                          Navigator.push(context, MaterialPageRoute( builder: (BuildContext context) { return SudokuHome(sudoku: getFilteredItems()[index],);  }))
+                        },
                         key: widget.key,
                       ),
                     );

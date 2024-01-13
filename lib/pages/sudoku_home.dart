@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import '../models/sudoku.dart';
 class SudokuHome extends StatefulWidget {
-  const SudokuHome({Key? key}) : super(key: key);
+  final Sudoku sudoku;
 
+  const SudokuHome({super.key, required this.sudoku });
   @override
   State<SudokuHome> createState() => _SudokuHomeState();
 }
 
 class _SudokuHomeState extends State<SudokuHome> {
+
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
 
   List<List<int>> originalSudoku = [
@@ -35,7 +38,17 @@ class _SudokuHomeState extends State<SudokuHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Scaffold(
+        appBar: AppBar(
+        title: const Text(
+        "PuzzlePro",
+        style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 30.0,
+    ),
+    ),
+    ),
+    body: Center(
       child: SizedBox(
         width: 350.0,
         height: 350.0,
@@ -63,6 +76,7 @@ class _SudokuHomeState extends State<SudokuHome> {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -87,15 +101,15 @@ class SudokuCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: originalValue != 0 ? Colors.transparent : colorScheme.primary.withOpacity(0.05)
+        color: originalValue != 0 ? Colors.transparent : addedDigitsValue != 0 ? colorScheme.error.withOpacity(0.05) : colorScheme.primary.withOpacity(0.05)
       ),
       child: Center(
         child: Text(
           originalValue != 0 ? '$originalValue' : addedDigitsValue != 0 ? '$addedDigitsValue' : '',
           style: TextStyle(
             fontSize: 24.0,
-            fontWeight: originalValue != 0 ? FontWeight.bold : FontWeight.normal,
-            color: originalValue != 0 ? colorScheme.secondary : colorScheme.onBackground,
+            fontWeight: FontWeight.bold,
+            color: originalValue != 0 ? colorScheme.secondary : colorScheme.primary,
           ),
         ),
       ),
@@ -110,10 +124,10 @@ class LinesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = colorScheme.outline
+      ..color = colorScheme.primary
       ..strokeWidth = 0.25;
     final Paint paintBold = Paint()
-      ..color = colorScheme.outline
+      ..color = colorScheme.primary
       ..strokeWidth = 2.0;
 
     double x = size.width / 9.0;

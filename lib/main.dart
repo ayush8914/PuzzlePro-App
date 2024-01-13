@@ -144,22 +144,22 @@ class _AppState extends State<App> {
             )),
         home: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              "PuzzlePro",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+            title: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
                 fontSize: 30.0,
               ),
             ),
           ),
-          body: const SudokuHome(),
-          // body: Home(
-          //   useLightMode: useLightMode,
-          //   useMaterial3: useMaterial3,
-          //   handleBrightnessChange: handleBrightnessChange,
-          //   handleColorSelect: handleColorSelect,
-          //   setTitle: setTitle,
-          // ),
+          // body: const SudokuHome(),
+          body: Home(
+            useLightMode: useLightMode,
+            useMaterial3: useMaterial3,
+            handleBrightnessChange: handleBrightnessChange,
+            handleColorSelect: handleColorSelect,
+            setTitle: setTitle,
+          ),
           bottomNavigationBar: NavigationBar(
             onDestinationSelected: (int index) {
               setState(() {
