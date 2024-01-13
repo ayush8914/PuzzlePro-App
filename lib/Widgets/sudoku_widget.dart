@@ -160,7 +160,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        height: 70,
+        height: 60,
         color: Color.alphaBlend(
           _colorScheme.primary.withOpacity(0.05),
           _colorScheme.surface,
@@ -186,8 +186,6 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   ],
                 ),
               ),
-              // Display a "condensed" version if the widget in the row are
-              // expected to overflow.
               if (constraints.maxWidth - 200 > 0) ...[
                 SizedBox(
                   height: 40,
