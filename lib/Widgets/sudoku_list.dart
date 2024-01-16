@@ -89,8 +89,13 @@ class _SudokuListViewState extends State<SudokuListView> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: SudokuWidget(
                         sudoku: getFilteredItems()[index],
-                        onSelected: () =>{
-                          Navigator.push(context, MaterialPageRoute( builder: (BuildContext context) { return SudokuHome(sudoku: getFilteredItems()[index],);  }))
+                        onSelected: () => {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return SudokuHome(
+                              sudoku: getFilteredItems()[index],
+                            );
+                          }))
                         },
                         key: widget.key,
                       ),

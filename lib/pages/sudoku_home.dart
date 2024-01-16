@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import '../models/sudoku.dart';
+
 class SudokuHome extends StatefulWidget {
   final Sudoku sudoku;
 
-  const SudokuHome({super.key, required this.sudoku });
+  const SudokuHome({super.key, required this.sudoku});
+
   @override
   State<SudokuHome> createState() => _SudokuHomeState();
 }
 
 class _SudokuHomeState extends State<SudokuHome> {
-
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
+  final List<int> currentSelectedCell = [10,10];
 
   List<List<int>> originalSudoku = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -36,47 +39,84 @@ class _SudokuHomeState extends State<SudokuHome> {
     [0, 0, 0, 0, 8, 0, 0, 7, 9],
   ];
 
+  void setAddedDigit(int digit) {
+    if(currentSelectedCell[0] > 9){
+      return;
+    }
+    setState(() {
+      addedDigitsSudoku[currentSelectedCell[0]][currentSelectedCell[1]] = digit;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: const Text(
-        "PuzzlePro",
-        style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 30.0,
-    ),
-    ),
-    ),
-    body: Center(
-      child: SizedBox(
-        width: 350.0,
-        height: 350.0,
-        child: CustomPaint(
-          painter: LinesPainter(_colorScheme),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 9,
-            ),
-            itemCount: originalSudoku.length * originalSudoku[0].length,
-            itemBuilder: (context, index) {
-              int row = index ~/ 9;
-              int col = index % 9;
-              int originalCellValue = originalSudoku[row][col];
-              int addedDigitsCellValue = addedDigitsSudoku[row][col];
-
-              return SudokuCell(
-                originalValue: originalCellValue,
-                addedDigitsValue: addedDigitsCellValue,
-                colorScheme: _colorScheme,
-                showBoldLineVertical: (col + 1) % 3 == 0 && col != 8,
-                showBoldLineHorizontal: (row + 1) % 3 == 0 && row != 8,
-              );
-            },
+          "PuzzlePro",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 30.0,
           ),
         ),
       ),
-    ),
+      body: Center(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 350.0,
+            height: 350.0,
+            child: CustomPaint(
+              painter: LinesPainter(_colorScheme),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 9,
+                ),
+                itemCount: originalSudoku.length * originalSudoku[0].length,
+                itemBuilder: (context, index) {
+                  int row = index ~/ 9;
+                  int col = index % 9;
+                  int originalCellValue = originalSudoku[row][col];
+                  int addedDigitsCellValue = addedDigitsSudoku[row][col];
+
+                  return SudokuCell(
+                    originalValue: originalCellValue,
+                    addedDigitsValue: addedDigitsCellValue,
+                    colorScheme: _colorScheme,
+                    isSelected: (currentSelectedCell[0] == row && currentSelectedCell[1] == col),
+                    onTap: () {
+                      setState(() {
+                        currentSelectedCell[0] = row;
+                        currentSelectedCell[1] = col;
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 100.0,
+          ),
+          DigitRow1(
+            colorScheme: _colorScheme,
+            onPressed: (digit) => {
+              setAddedDigit(digit)
+              }
+          ),
+          const SizedBox(
+            height: 8.0,
+          ),
+          DigitRow2(
+              colorScheme: _colorScheme,
+              onPressed: (digit) => {
+                setAddedDigit(digit)
+              }
+          ),
+        ],
+      )),
     );
   }
 }
@@ -85,37 +125,51 @@ class SudokuCell extends StatelessWidget {
   final ColorScheme colorScheme;
   final int originalValue;
   final int addedDigitsValue;
-  final bool showBoldLineVertical;
-  final bool showBoldLineHorizontal;
+  final Function() onTap;
+  final bool isSelected;
 
   const SudokuCell({
     Key? key,
     required this.originalValue,
     required this.addedDigitsValue,
     required this.colorScheme,
-    required this.showBoldLineVertical,
-    required this.showBoldLineHorizontal,
+    required this.onTap,
+    required this.isSelected,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: originalValue != 0 ? Colors.transparent : addedDigitsValue != 0 ? colorScheme.error.withOpacity(0.05) : colorScheme.primary.withOpacity(0.05)
-      ),
-      child: Center(
-        child: Text(
-          originalValue != 0 ? '$originalValue' : addedDigitsValue != 0 ? '$addedDigitsValue' : '',
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: originalValue != 0 ? colorScheme.secondary : colorScheme.primary,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: isSelected ? Border.all(color: colorScheme.primary, width: 2.0) : Border.all(color: Colors.transparent),
+            color: originalValue != 0
+                ? Colors.transparent
+                : addedDigitsValue != 0
+                    ? colorScheme.error.withOpacity(0.05)
+                    : colorScheme.primary.withOpacity(0.05)),
+        child: Center(
+          child: Text(
+            originalValue != 0
+                ? '$originalValue'
+                : addedDigitsValue != 0
+                    ? '$addedDigitsValue'
+                    : '',
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: originalValue != 0
+                  ? colorScheme.secondary
+                  : colorScheme.primary,
+            ),
           ),
         ),
       ),
     );
   }
 }
+
 class LinesPainter extends CustomPainter {
   final ColorScheme colorScheme;
 
@@ -135,7 +189,8 @@ class LinesPainter extends CustomPainter {
 
     for (int i = 1; i < 9; i++) {
       if (i % 3 == 0) {
-        canvas.drawLine(Offset(x - 1, 0), Offset(x - 1, size.height), paintBold);
+        canvas.drawLine(
+            Offset(x - 1, 0), Offset(x - 1, size.height), paintBold);
       } else {
         canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
       }
@@ -161,3 +216,90 @@ class LinesPainter extends CustomPainter {
   }
 }
 
+class DigitRow1 extends StatelessWidget {
+  final ColorScheme colorScheme;
+  final void Function(int digit) onPressed;
+  static const List<int> digits = [1, 2, 3, 4, 5];
+
+  const DigitRow1(
+      {super.key, required this.colorScheme, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int digit in digits)
+          InputButton(
+              colorScheme: colorScheme,
+              onPressed: () => onPressed(digit),
+              child: Text("$digit")),
+      ],
+    );
+  }
+}
+
+class DigitRow2 extends StatelessWidget {
+  final ColorScheme colorScheme;
+  final void Function(int digit) onPressed;
+  static const List<int> digits = [6, 7, 8, 9];
+
+  const DigitRow2(
+      {super.key, required this.colorScheme, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int digit in digits)
+          InputButton(
+              colorScheme: colorScheme,
+              onPressed: () => onPressed(digit),
+              child: Text("$digit")),
+        InputButton(
+            colorScheme: colorScheme,
+            onPressed: () => print("clear click"),
+            child: Icon(Icons.backspace_rounded))
+      ],
+    );
+  }
+}
+
+class InputButton extends StatelessWidget {
+  final ColorScheme colorScheme;
+  final Widget child;
+  final void Function() onPressed;
+
+  const InputButton({
+    Key? key,
+    required this.colorScheme,
+    required this.child,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: SizedBox(
+          width: 100.0,
+          height: 50.0,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              textStyle: MaterialStateProperty.all(
+                const TextStyle(
+                    fontSize: 25.0, fontFamily: "Rubik", fontWeight: FontWeight.w700),
+              ),
+            ),
+            onPressed: () {
+              onPressed();
+            },
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}

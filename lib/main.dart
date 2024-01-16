@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/pages/home.dart';
@@ -127,7 +126,7 @@ class _AppState extends State<App> {
         title: title,
         themeMode: themeMode,
         theme: ThemeData(
-          textTheme: GoogleFonts.interTextTheme(),
+            fontFamily: 'Rubik',
             colorSchemeSeed: colorSelected.color,
             useMaterial3: true,
             brightness: Brightness.light,
@@ -135,7 +134,7 @@ class _AppState extends State<App> {
               surfaceTintColor: Colors.transparent,
             )),
         darkTheme: ThemeData(
-            textTheme: GoogleFonts.interTextTheme(),
+            fontFamily: 'Rubik',
             colorSchemeSeed: colorSelected.color,
             useMaterial3: true,
             brightness: Brightness.dark,
@@ -147,8 +146,8 @@ class _AppState extends State<App> {
             title: Text(
               title,
               style: const TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 30.0,
+                fontWeight: FontWeight.w700,
+                fontSize: 27.0,
               ),
             ),
           ),

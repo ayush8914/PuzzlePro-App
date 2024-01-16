@@ -171,7 +171,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +181,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: _colorScheme.primary),
                     ),
                   ],
                 ),
@@ -191,6 +191,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   height: 40,
                   width: 40,
                   child: FloatingActionButton(
+                    heroTag: "DeleteButton${widget.sudoku.sudokuId}",
                     onPressed: () {},
                     elevation: 0,
                     backgroundColor: _colorScheme.surface,
@@ -202,6 +203,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   height: 40,
                   width: 40,
                   child: FloatingActionButton(
+                    heroTag: "StatusIcon${widget.sudoku.sudokuId}",
                     onPressed: () {},
                     elevation: 0,
                     backgroundColor: _colorScheme.surface,
