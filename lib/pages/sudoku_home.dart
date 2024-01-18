@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import '../models/sudoku.dart';
 
 class SudokuHome extends StatefulWidget {
@@ -13,7 +12,7 @@ class SudokuHome extends StatefulWidget {
 
 class _SudokuHomeState extends State<SudokuHome> {
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
-  final List<int> currentSelectedCell = [10,10];
+  final List<int> currentSelectedCell = [10, 10];
 
   List<List<int>> originalSudoku = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -40,7 +39,7 @@ class _SudokuHomeState extends State<SudokuHome> {
   ];
 
   void setAddedDigit(int digit) {
-    if(currentSelectedCell[0] > 9){
+    if (currentSelectedCell[0] > 9) {
       return;
     }
     setState(() {
@@ -59,12 +58,63 @@ class _SudokuHomeState extends State<SudokuHome> {
             fontSize: 30.0,
           ),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              // Handle popup menu actions here
+              if (value == "share") {
+                // Handle share action
+              } else if (value == "delete") {
+                // Handle delete action
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: "share",
+                  child: Text("Share"),
+                ),
+                const PopupMenuItem<String>(
+                  value: "delete",
+                  child: Text("Delete"),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: Center(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(
+                  child: Text(
+                    "Some details here",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle check answer button
+                  },
+                  child: Text(
+                    "Check Answer",
+                    style: TextStyle(
+                        color: false
+                            ? _colorScheme.primary
+                            : _colorScheme.secondary),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10.0),
           SizedBox(
             width: 350.0,
             height: 350.0,
@@ -85,7 +135,8 @@ class _SudokuHomeState extends State<SudokuHome> {
                     originalValue: originalCellValue,
                     addedDigitsValue: addedDigitsCellValue,
                     colorScheme: _colorScheme,
-                    isSelected: (currentSelectedCell[0] == row && currentSelectedCell[1] == col),
+                    isSelected: (currentSelectedCell[0] == row &&
+                        currentSelectedCell[1] == col),
                     onTap: () {
                       setState(() {
                         currentSelectedCell[0] = row;
@@ -98,22 +149,54 @@ class _SudokuHomeState extends State<SudokuHome> {
             ),
           ),
           const SizedBox(
-            height: 100.0,
+            height: 20.0,
           ),
           DigitRow1(
-            colorScheme: _colorScheme,
-            onPressed: (digit) => {
-              setAddedDigit(digit)
-              }
-          ),
+              colorScheme: _colorScheme,
+              onPressed: (digit) => {setAddedDigit(digit)}),
           const SizedBox(
             height: 8.0,
           ),
           DigitRow2(
               colorScheme: _colorScheme,
-              onPressed: (digit) => {
-                setAddedDigit(digit)
-              }
+              onPressed: (digit) => {setAddedDigit(digit)}),
+          const SizedBox(
+            height: 20.0,
+          ),
+          // Bottom buttons
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle save progress button
+                    },
+                    child: const Icon(Icons.save_as_rounded),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle reset sudoku button
+                    },
+                    child: const Icon(Icons.restart_alt_rounded),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle calculate answer button
+                    },
+                    child: const Icon(Icons.calculate_rounded),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle validate sudoku button
+                    },
+                    child: const Icon(Icons.lightbulb_outline_rounded),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       )),
@@ -143,7 +226,9 @@ class SudokuCell extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          border: isSelected ? Border.all(color: colorScheme.primary, width: 2.0) : Border.all(color: Colors.transparent),
+            border: isSelected
+                ? Border.all(color: colorScheme.primary, width: 2.0)
+                : Border.all(color: Colors.transparent),
             color: originalValue != 0
                 ? Colors.transparent
                 : addedDigitsValue != 0
@@ -260,7 +345,7 @@ class DigitRow2 extends StatelessWidget {
         InputButton(
             colorScheme: colorScheme,
             onPressed: () => print("clear click"),
-            child: Icon(Icons.backspace_rounded))
+            child: const Icon(Icons.backspace_rounded))
       ],
     );
   }
@@ -290,7 +375,9 @@ class InputButton extends StatelessWidget {
             style: ButtonStyle(
               textStyle: MaterialStateProperty.all(
                 const TextStyle(
-                    fontSize: 25.0, fontFamily: "Rubik", fontWeight: FontWeight.w700),
+                    fontSize: 25.0,
+                    fontFamily: "Rubik",
+                    fontWeight: FontWeight.w700),
               ),
             ),
             onPressed: () {
