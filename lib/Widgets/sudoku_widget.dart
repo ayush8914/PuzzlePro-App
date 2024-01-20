@@ -160,7 +160,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        height: 70,
+        height: 60,
         color: Color.alphaBlend(
           _colorScheme.primary.withOpacity(0.05),
           _colorScheme.surface,
@@ -171,7 +171,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,18 +181,17 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: _colorScheme.primary),
                     ),
                   ],
                 ),
               ),
-              // Display a "condensed" version if the widget in the row are
-              // expected to overflow.
               if (constraints.maxWidth - 200 > 0) ...[
                 SizedBox(
                   height: 40,
                   width: 40,
                   child: FloatingActionButton(
+                    heroTag: "DeleteButton${widget.sudoku.sudokuId}",
                     onPressed: () {},
                     elevation: 0,
                     backgroundColor: _colorScheme.surface,
@@ -204,6 +203,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   height: 40,
                   width: 40,
                   child: FloatingActionButton(
+                    heroTag: "StatusIcon${widget.sudoku.sudokuId}",
                     onPressed: () {},
                     elevation: 0,
                     backgroundColor: _colorScheme.surface,

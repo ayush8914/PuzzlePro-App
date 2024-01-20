@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/pages/home.dart';
+import 'package:puzzlepro_app/pages/sudoku_home.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -17,6 +17,11 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  int screenIndex = ScreenSelected.home.value;
+  bool controllerInitialized = false;
+  bool showMediumSizeLayout = false;
+  bool showLargeSizeLayout = false;
+
   bool useMaterial3 = true;
   ThemeMode themeMode = ThemeMode.system;
   ColorSeed colorSelected = ColorSeed.teal;
@@ -46,36 +51,123 @@ class _AppState extends State<App> {
     });
   }
 
+  void handleScreenChanged(int screenSelected) {
+    setState(() {
+      screenIndex = screenSelected;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    //for making app responsive according to device
+
+    super.didChangeDependencies();
+    final double width = MediaQuery.of(context).size.width;
+    if (width > mediumWidthBreakpoint) {
+      if (width > largeWidthBreakpoint) {
+        showMediumSizeLayout = false;
+        showLargeSizeLayout = true;
+      } else {
+        showMediumSizeLayout = true;
+        showLargeSizeLayout = false;
+      }
+    } else {
+      showMediumSizeLayout = false;
+      showLargeSizeLayout = false;
+    }
+  }
+
+  // Widget setScreen(ScreenSelected screenSelected) {
+  //   // switch (screenSelected) {
+  //   //   case ScreenSelected.home:
+  //       return Expanded(
+  //         child: HomeScreen();
+  //       );
+  //     // case ScreenSelected.scanner:
+  //     //   return const ColorPalettesScreen();
+  //     // case ScreenSelected.generator:
+  //     //   return const TypographyScreen();
+  //     // case ScreenSelected.setting:
+  //     //   return const ElevationScreen();
+  //   // }
+  // }
+
   @override
   Widget build(BuildContext context) {
     String title = "PuzzlePro";
 
-    void setTitle(String newTitle){
+    var bottomNavigationBarItems = const <Widget>[
+      NavigationDestination(
+        icon: Icon(Icons.home_rounded),
+        label: 'Home',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.qr_code_scanner_rounded),
+        label: 'Scan',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.add_box_rounded),
+        label: 'Generate',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.settings_rounded),
+        label: 'Settings',
+      ),
+    ];
+
+    void setTitle(String newTitle) {
       setState(() {
         title = newTitle;
       });
     }
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: title,
-      themeMode: themeMode,
-      theme: ThemeData(
-        colorSchemeSeed: colorSelected.color,
-        useMaterial3: true,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        colorSchemeSeed: colorSelected.color,
-        useMaterial3: true,
-        brightness: Brightness.dark,
-      ),
-      home: Home(
-        useLightMode: useLightMode,
-        useMaterial3: useMaterial3,
-        handleBrightnessChange: handleBrightnessChange,
-        handleColorSelect: handleColorSelect,
-        setTitle: setTitle,
-      ),
-    );
+        debugShowCheckedModeBanner: false,
+        title: title,
+        themeMode: themeMode,
+        theme: ThemeData(
+            fontFamily: 'Rubik',
+            colorSchemeSeed: colorSelected.color,
+            useMaterial3: true,
+            brightness: Brightness.light,
+            appBarTheme: const AppBarTheme(
+              surfaceTintColor: Colors.transparent,
+            )),
+        darkTheme: ThemeData(
+            fontFamily: 'Rubik',
+            colorSchemeSeed: colorSelected.color,
+            useMaterial3: true,
+            brightness: Brightness.dark,
+            appBarTheme: const AppBarTheme(
+              surfaceTintColor: Colors.transparent,
+            )),
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 27.0,
+              ),
+            ),
+          ),
+          // body: const SudokuHome(),
+          body: Home(
+            useLightMode: useLightMode,
+            useMaterial3: useMaterial3,
+            handleBrightnessChange: handleBrightnessChange,
+            handleColorSelect: handleColorSelect,
+            setTitle: setTitle,
+          ),
+          bottomNavigationBar: NavigationBar(
+            onDestinationSelected: (int index) {
+              setState(() {
+                screenIndex = index;
+              });
+            },
+            destinations: bottomNavigationBarItems,
+            selectedIndex: screenIndex,
+          ),
+        ));
   }
 }

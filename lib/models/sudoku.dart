@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'sudoku.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 2)
 class Sudoku{
   @HiveField(0)
   final List<List<int>> originalSudoku;
@@ -24,11 +24,14 @@ class Sudoku{
   @HiveField(6)
   String difficulty;
 
+  @HiveField(7)
+  int sudokuId;
+
   Sudoku(this.originalSudoku, this.isScanned, this.difficulty)
       : createdAt = DateTime.now(),
         lastViewed = DateTime.now(),
         addedDigits = List.generate(9, (index) => List<int>.filled(9, 0)),
-        isComplete = false;
-
+        isComplete = false,
+        sudokuId = DateTime.timestamp().microsecond;
 
 }
