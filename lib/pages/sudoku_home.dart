@@ -364,7 +364,7 @@ class DigitRow2 extends StatelessWidget {
               child: Text("$digit")),
         InputButton(
             colorScheme: colorScheme,
-            onPressed: () =><void>{
+            onPressed: () => {
               clearCell(),
             },
             child: const Icon(Icons.backspace_rounded))
