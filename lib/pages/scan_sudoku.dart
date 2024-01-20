@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/foundation.dart';
+import 'package:puzzlepro_app/pages/upload_image.dart';
 
 class ImageProcessingPage extends StatefulWidget {
   const ImageProcessingPage({super.key});
@@ -98,6 +100,7 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         FloatingActionButton(
+          heroTag: "delete button",
           onPressed: () {
             _clear();
           },
@@ -109,6 +112,7 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
           Padding(
             padding: const EdgeInsets.only(left: 32.0),
             child: FloatingActionButton(
+              heroTag: "crop button",
               onPressed: () {
                 _cropImage();
               },
@@ -116,7 +120,19 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
               tooltip: 'Crop',
               child: Icon(Icons.crop, color: _colorScheme.primary),
             ),
-          )
+          ),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: FloatingActionButton(
+            heroTag: "save button",
+            onPressed: () {
+              _saveAndProceed();
+            },
+            backgroundColor: _colorScheme.onPrimary.withOpacity(0.3),
+            tooltip: 'Save',
+            child: const Icon(Icons.check_rounded, color: Colors.green),
+          ),
+        )
       ],
     );
   }
@@ -210,7 +226,9 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      _pickedFile = pickedFile;
+      setState(() {
+        _pickedFile = pickedFile;
+      });
     } else {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -242,5 +260,25 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
         const SnackBar(content: Text('Image capture canceled')),
       );
     }
+  }
+
+  void _saveAndProceed() async {
+    String imagePath = "some_path";
+    if(_croppedFile == null){
+      imagePath = _pickedFile!.path;
+    }
+    else{
+      imagePath = _croppedFile!.path;
+    }
+    final bytes = File(imagePath).readAsBytesSync();
+    
+    Navigator.push(context, 
+      MaterialPageRoute(
+      builder: (BuildContext context) {
+      return UploadImagePage(
+        image: bytes,
+      );
+      })
+    );
   }
 }
