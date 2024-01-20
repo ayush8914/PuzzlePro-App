@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_widget.dart';
 import 'package:puzzlepro_app/models/sudoku.dart';
-import 'package:puzzlepro_app/pages/sudoku_home.dart';
 
 enum ItemFilter { all, incomplete, completed }
 
@@ -37,43 +36,40 @@ class _SudokuListViewState extends State<SudokuListView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FilterButton(
-                filter: ItemFilter.all,
-                text: 'All',
-                onPressed: () {
-                  setState(() {
-                    currentFilter = ItemFilter.all;
-                  });
-                },
-                isSelected: currentFilter == ItemFilter.all,
-              ),
-              FilterButton(
-                filter: ItemFilter.incomplete,
-                text: 'Incomplete',
-                onPressed: () {
-                  setState(() {
-                    currentFilter = ItemFilter.incomplete;
-                  });
-                },
-                isSelected: currentFilter == ItemFilter.incomplete,
-              ),
-              FilterButton(
-                filter: ItemFilter.completed,
-                text: 'Completed',
-                onPressed: () {
-                  setState(() {
-                    currentFilter = ItemFilter.completed;
-                  });
-                },
-                isSelected: currentFilter == ItemFilter.completed,
-              ),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FilterButton(
+              filter: ItemFilter.all,
+              text: 'All',
+              onPressed: () {
+                setState(() {
+                  currentFilter = ItemFilter.all;
+                });
+              },
+              isSelected: currentFilter == ItemFilter.all,
+            ),
+            FilterButton(
+              filter: ItemFilter.incomplete,
+              text: 'Incomplete',
+              onPressed: () {
+                setState(() {
+                  currentFilter = ItemFilter.incomplete;
+                });
+              },
+              isSelected: currentFilter == ItemFilter.incomplete,
+            ),
+            FilterButton(
+              filter: ItemFilter.completed,
+              text: 'Completed',
+              onPressed: () {
+                setState(() {
+                  currentFilter = ItemFilter.completed;
+                });
+              },
+              isSelected: currentFilter == ItemFilter.completed,
+            ),
+          ],
         ),
         Expanded(
           child: Padding(
@@ -84,19 +80,12 @@ class _SudokuListViewState extends State<SudokuListView> {
                 const SizedBox(height: 8),
                 ...List.generate(
                   getFilteredItems().length,
-                  (index) {
+                      (index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: SudokuWidget(
                         sudoku: getFilteredItems()[index],
-                        onSelected: () => {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return SudokuHome(
-                              sudoku: getFilteredItems()[index],
-                            );
-                          }))
-                        },
+                        onSelected: () => print("hello"),
                         key: widget.key,
                       ),
                     );
@@ -128,18 +117,19 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return isSelected
-        ? FilledButton(
-            onPressed: onPressed,
-            child: Text(
-              text,
-            ),
-          )
-        : ElevatedButton(
-            onPressed: onPressed,
-            child: Text(
-              text,
-            ),
-          );
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        backgroundColor: isSelected
+            ? MaterialStateProperty.all<Color>(theme.focusColor)
+            : null,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: isSelected ? theme.primaryTextTheme.bodyMedium!.color : null,
+        ),
+      ),
+    );
   }
 }
