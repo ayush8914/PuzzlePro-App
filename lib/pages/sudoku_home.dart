@@ -47,6 +47,20 @@ class _SudokuHomeState extends State<SudokuHome> {
     });
   }
 
+  void resetBoard(){
+    setState(() {
+      addedDigitsSudoku = List<List<int>>.generate(
+        originalSudoku.length,
+            (row) => List<int>.generate(originalSudoku[row].length, (col) => originalSudoku[row][col]),
+      );
+    });
+  }
+
+  void clearCell(){
+    setState(() {
+      addedDigitsSudoku[currentSelectedCell[0]][currentSelectedCell[1]] =0;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +69,7 @@ class _SudokuHomeState extends State<SudokuHome> {
           "PuzzlePro",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 30.0,
+            fontSize: 25.0,
           ),
         ),
         actions: [
@@ -143,6 +157,7 @@ class _SudokuHomeState extends State<SudokuHome> {
                         currentSelectedCell[1] = col;
                       });
                     },
+
                   );
                 },
               ),
@@ -159,7 +174,8 @@ class _SudokuHomeState extends State<SudokuHome> {
           ),
           DigitRow2(
               colorScheme: _colorScheme,
-              onPressed: (digit) => {setAddedDigit(digit)}),
+              onPressed: (digit) => {setAddedDigit(digit)},
+              clearCell: () => {clearCell()}),
           const SizedBox(
             height: 20.0,
           ),
@@ -178,7 +194,7 @@ class _SudokuHomeState extends State<SudokuHome> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle reset sudoku button
+                      resetBoard();
                     },
                     child: const Icon(Icons.restart_alt_rounded),
                   ),
@@ -209,6 +225,7 @@ class SudokuCell extends StatelessWidget {
   final int originalValue;
   final int addedDigitsValue;
   final Function() onTap;
+
   final bool isSelected;
 
   const SudokuCell({
@@ -218,7 +235,9 @@ class SudokuCell extends StatelessWidget {
     required this.colorScheme,
     required this.onTap,
     required this.isSelected,
+
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -327,10 +346,11 @@ class DigitRow1 extends StatelessWidget {
 class DigitRow2 extends StatelessWidget {
   final ColorScheme colorScheme;
   final void Function(int digit) onPressed;
+  final void Function() clearCell;
   static const List<int> digits = [6, 7, 8, 9];
 
   const DigitRow2(
-      {super.key, required this.colorScheme, required this.onPressed});
+      {super.key, required this.colorScheme, required this.onPressed,required this.clearCell});
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +364,9 @@ class DigitRow2 extends StatelessWidget {
               child: Text("$digit")),
         InputButton(
             colorScheme: colorScheme,
-            onPressed: () => print("clear click"),
+            onPressed: () => {
+              clearCell(),
+            },
             child: const Icon(Icons.backspace_rounded))
       ],
     );
