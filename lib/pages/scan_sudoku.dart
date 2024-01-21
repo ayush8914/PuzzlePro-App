@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -104,7 +103,7 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
           onPressed: () {
             _clear();
           },
-          backgroundColor: _colorScheme.onPrimary.withOpacity(0.3),
+          backgroundColor: _colorScheme.onSecondary,
           tooltip: 'Delete',
           child: const Icon(Icons.delete, color: Colors.red),
         ),
@@ -116,7 +115,7 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
               onPressed: () {
                 _cropImage();
               },
-              backgroundColor: _colorScheme.onPrimary.withOpacity(0.3),
+              backgroundColor: _colorScheme.onSecondary,
               tooltip: 'Crop',
               child: Icon(Icons.crop, color: _colorScheme.primary),
             ),
@@ -128,7 +127,7 @@ class _ImageProcessingPageState extends State<ImageProcessingPage> {
             onPressed: () {
               _saveAndProceed();
             },
-            backgroundColor: _colorScheme.onPrimary.withOpacity(0.3),
+            backgroundColor: _colorScheme.onSecondary,
             tooltip: 'Save',
             child: const Icon(Icons.check_rounded, color: Colors.green),
           ),

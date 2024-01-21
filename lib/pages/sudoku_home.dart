@@ -49,6 +49,10 @@ class _SudokuHomeState extends State<SudokuHome> {
 
   @override
   Widget build(BuildContext context) {
+    originalSudoku = widget.sudoku.originalSudoku;
+    if(widget.sudoku.addedDigits != null){
+      addedDigitsSudoku = widget.sudoku.addedDigits!;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
