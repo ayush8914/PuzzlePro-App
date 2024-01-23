@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/pages/home.dart';
-import 'package:puzzlepro_app/pages/sudoku_home.dart';
+import 'package:puzzlepro_app/pages/scan_sudoku.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -17,10 +17,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int screenIndex = ScreenSelected.home.value;
+  int screenIndex = ScreenSelected.scanner.value;
   bool controllerInitialized = false;
   bool showMediumSizeLayout = false;
   bool showLargeSizeLayout = false;
+  List<String> titleList = ["PuzzlePro", "Scan", "Generator", "Settings"];
+  String title = "PuzzlePro";
 
   bool useMaterial3 = true;
   ThemeMode themeMode = ThemeMode.system;
@@ -51,16 +53,8 @@ class _AppState extends State<App> {
     });
   }
 
-  void handleScreenChanged(int screenSelected) {
-    setState(() {
-      screenIndex = screenSelected;
-    });
-  }
-
   @override
   void didChangeDependencies() {
-    //for making app responsive according to device
-
     super.didChangeDependencies();
     final double width = MediaQuery.of(context).size.width;
     if (width > mediumWidthBreakpoint) {
@@ -77,25 +71,37 @@ class _AppState extends State<App> {
     }
   }
 
-  // Widget setScreen(ScreenSelected screenSelected) {
-  //   // switch (screenSelected) {
-  //   //   case ScreenSelected.home:
-  //       return Expanded(
-  //         child: HomeScreen();
-  //       );
-  //     // case ScreenSelected.scanner:
-  //     //   return const ColorPalettesScreen();
-  //     // case ScreenSelected.generator:
-  //     //   return const TypographyScreen();
-  //     // case ScreenSelected.setting:
-  //     //   return const ElevationScreen();
-  //   // }
-  // }
-
+  Widget getScreen(ScreenSelected screenSelected) {
+    switch (screenSelected) {
+      case ScreenSelected.home:
+        return Home(
+          useLightMode: useLightMode,
+          useMaterial3: useMaterial3,
+          handleBrightnessChange: handleBrightnessChange,
+          handleColorSelect: handleColorSelect,
+        );
+      case ScreenSelected.scanner:
+        return const ImageProcessingPage();
+      case ScreenSelected.generator:
+        return Home(
+          useLightMode: useLightMode,
+          useMaterial3: useMaterial3,
+          handleBrightnessChange: handleBrightnessChange,
+          handleColorSelect: handleColorSelect,
+        );
+      //   return const GeneratorPage();
+      case ScreenSelected.setting:
+        return Home(
+          useLightMode: useLightMode,
+          useMaterial3: useMaterial3,
+          handleBrightnessChange: handleBrightnessChange,
+          handleColorSelect: handleColorSelect,
+        );
+      //   return const SettingsPage();
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    String title = "PuzzlePro";
-
     var bottomNavigationBarItems = const <Widget>[
       NavigationDestination(
         icon: Icon(Icons.home_rounded),
@@ -115,15 +121,8 @@ class _AppState extends State<App> {
       ),
     ];
 
-    void setTitle(String newTitle) {
-      setState(() {
-        title = newTitle;
-      });
-    }
-
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: title,
         themeMode: themeMode,
         theme: ThemeData(
             fontFamily: 'Rubik',
@@ -152,17 +151,13 @@ class _AppState extends State<App> {
             ),
           ),
           // body: const SudokuHome(),
-          body: Home(
-            useLightMode: useLightMode,
-            useMaterial3: useMaterial3,
-            handleBrightnessChange: handleBrightnessChange,
-            handleColorSelect: handleColorSelect,
-            setTitle: setTitle,
-          ),
+          body: getScreen(ScreenSelected.values[screenIndex]),
+          // body: const ScanOptionsPage(),
           bottomNavigationBar: NavigationBar(
             onDestinationSelected: (int index) {
               setState(() {
                 screenIndex = index;
+                title = titleList[index];
               });
             },
             destinations: bottomNavigationBarItems,
