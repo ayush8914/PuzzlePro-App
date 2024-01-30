@@ -216,13 +216,13 @@ class SudokuCell extends StatelessWidget {
   final bool isSelected;
 
   const SudokuCell({
-    Key? key,
+    super.key,
     required this.originalValue,
     required this.addedDigitsValue,
     required this.colorScheme,
     required this.onTap,
     required this.isSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -361,11 +361,11 @@ class InputButton extends StatelessWidget {
   final void Function() onPressed;
 
   const InputButton({
-    Key? key,
+    super.key,
     required this.colorScheme,
     required this.child,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

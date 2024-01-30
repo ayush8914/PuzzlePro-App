@@ -17,7 +17,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int screenIndex = ScreenSelected.scanner.value;
+  int screenIndex = ScreenSelected.home.value;
   bool controllerInitialized = false;
   bool showMediumSizeLayout = false;
   bool showLargeSizeLayout = false;

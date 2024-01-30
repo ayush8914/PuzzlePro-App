@@ -1,8 +1,9 @@
 import 'package:hive/hive.dart';
+
 part 'sudoku.g.dart';
 
 @HiveType(typeId: 2)
-class Sudoku{
+class Sudoku {
   @HiveField(0)
   final List<List<int>> originalSudoku;
 
@@ -25,13 +26,40 @@ class Sudoku{
   String difficulty;
 
   @HiveField(7)
-  int sudokuId;
+  List<List<int>>? finalAnswer;
 
   Sudoku(this.originalSudoku, this.isScanned, this.difficulty)
       : createdAt = DateTime.now(),
         lastViewed = DateTime.now(),
         addedDigits = List.generate(9, (index) => List<int>.filled(9, 0)),
-        isComplete = false,
-        sudokuId = DateTime.timestamp().microsecond;
+        isComplete = false;
 
+  Sudoku.empty()
+      : originalSudoku = [
+          [5, 3, 0, 0, 7, 0, 0, 0, 0],
+          [6, 0, 0, 1, 9, 5, 0, 0, 0],
+          [0, 9, 8, 0, 0, 0, 0, 6, 0],
+          [8, 0, 0, 0, 6, 0, 0, 0, 3],
+          [4, 0, 0, 8, 0, 3, 0, 0, 1],
+          [7, 0, 0, 0, 2, 0, 0, 0, 6],
+          [0, 6, 0, 0, 0, 0, 2, 8, 0],
+          [0, 0, 0, 4, 1, 9, 0, 0, 5],
+          [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ],
+        addedDigits = [
+          [5, 3, 0, 0, 7, 0, 0, 0, 0],
+          [6, 0, 0, 1, 9, 5, 3, 5, 0],
+          [0, 9, 8, 3, 0, 5, 0, 6, 5],
+          [8, 0, 0, 0, 6, 0, 0, 0, 3],
+          [4, 0, 0, 8, 0, 3, 0, 0, 1],
+          [7, 0, 0, 0, 2, 0, 3, 5, 6],
+          [0, 6, 2, 0, 0, 5, 2, 8, 0],
+          [0, 0, 0, 4, 1, 9, 0, 5, 5],
+          [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ],
+        isScanned = true,
+        difficulty = "NA",
+        createdAt = DateTime.now(),
+        lastViewed = DateTime.now(),
+        isComplete = false;
 }
