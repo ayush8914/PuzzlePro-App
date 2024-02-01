@@ -23,7 +23,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
 
-  final List<Sudoku> sudokuList = [Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty()];
+  final List<Sudoku> sudokuList = [Sudoku.correct(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty()];
 
   @override
   Widget build(BuildContext context) {

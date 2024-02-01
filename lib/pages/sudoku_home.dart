@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:puzzlepro_app/pages/sudoku_answer.dart';
 import '../models/sudoku.dart';
 
 class SudokuHome extends StatefulWidget {
@@ -47,10 +48,37 @@ class _SudokuHomeState extends State<SudokuHome> {
     });
   }
 
+  void onClearPress() {
+    setState(() {
+      addedDigitsSudoku[currentSelectedCell[0]][currentSelectedCell[1]] =
+          originalSudoku[currentSelectedCell[0]][currentSelectedCell[1]];
+    });
+  }
+
+  void clearSudoku() {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        setState(() {
+          addedDigitsSudoku[i][j] = originalSudoku[i][j];
+        });
+      }
+    }
+  }
+
+  void solveSudoku() {
+    var tempSudoku = widget.sudoku;
+    tempSudoku.originalSudoku = addedDigitsSudoku;
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      return SudokuAnswer(
+        sudoku: tempSudoku,
+      );
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     originalSudoku = widget.sudoku.originalSudoku;
-    if(widget.sudoku.addedDigits != null){
+    if (widget.sudoku.addedDigits != null) {
       addedDigitsSudoku = widget.sudoku.addedDigits!;
     }
     return Scaffold(
@@ -65,12 +93,8 @@ class _SudokuHomeState extends State<SudokuHome> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              // Handle popup menu actions here
               if (value == "share") {
-                // Handle share action
-              } else if (value == "delete") {
-                // Handle delete action
-              }
+              } else if (value == "delete") {}
             },
             itemBuilder: (BuildContext context) {
               return [
@@ -162,8 +186,10 @@ class _SudokuHomeState extends State<SudokuHome> {
             height: 8.0,
           ),
           DigitRow2(
-              colorScheme: _colorScheme,
-              onPressed: (digit) => {setAddedDigit(digit)}),
+            colorScheme: _colorScheme,
+            onPressed: (digit) => {setAddedDigit(digit)},
+            onClearPressed: () => {onClearPress()},
+          ),
           const SizedBox(
             height: 20.0,
           ),
@@ -182,13 +208,13 @@ class _SudokuHomeState extends State<SudokuHome> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle reset sudoku button
+                      clearSudoku();
                     },
                     child: const Icon(Icons.restart_alt_rounded),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle calculate answer button
+                      solveSudoku();
                     },
                     child: const Icon(Icons.calculate_rounded),
                   ),
@@ -332,9 +358,13 @@ class DigitRow2 extends StatelessWidget {
   final ColorScheme colorScheme;
   final void Function(int digit) onPressed;
   static const List<int> digits = [6, 7, 8, 9];
+  final void Function() onClearPressed;
 
   const DigitRow2(
-      {super.key, required this.colorScheme, required this.onPressed});
+      {super.key,
+      required this.colorScheme,
+      required this.onPressed,
+      required this.onClearPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +378,7 @@ class DigitRow2 extends StatelessWidget {
               child: Text("$digit")),
         InputButton(
             colorScheme: colorScheme,
-            onPressed: () => print("clear click"),
+            onPressed: onClearPressed,
             child: const Icon(Icons.backspace_rounded))
       ],
     );

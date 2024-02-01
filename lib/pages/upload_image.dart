@@ -43,8 +43,9 @@ class _UploadImagePageState extends State<UploadImagePage> {
     });
     try {
       HttpClient httpClient = HttpClient();
-      var url =
-          'https://puzzlepro-backend-release-0-1.onrender.com/generate-sudoku-matrix';
+      // var url =
+      //     'https://puzzlepro-backend-release-0-1.onrender.com/generate-sudoku-matrix';
+      var url = "http://10.0.2.2:8000/generate-sudoku-matrix";
       String imageBase64 = base64Encode(widget.image);
       var jsonBody = {"base64_image": "data:image/jpg;base64,$imageBase64"};
       var body = json.encode(jsonBody);

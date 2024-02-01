@@ -5,10 +5,10 @@ part 'sudoku.g.dart';
 @HiveType(typeId: 2)
 class Sudoku {
   @HiveField(0)
-  final List<List<int>> originalSudoku;
+  List<List<int>> originalSudoku;
 
   @HiveField(1)
-  final DateTime? createdAt;
+  DateTime? createdAt;
 
   @HiveField(2)
   List<List<int>>? addedDigits;
@@ -62,4 +62,50 @@ class Sudoku {
         createdAt = DateTime.now(),
         lastViewed = DateTime.now(),
         isComplete = false;
+
+  Sudoku.correct()
+      : originalSudoku = [
+          [5, 3, 0, 0, 7, 0, 0, 0, 0],
+          [6, 0, 0, 1, 9, 5, 0, 0, 0],
+          [0, 9, 8, 0, 0, 0, 0, 6, 0],
+          [8, 0, 0, 0, 6, 0, 0, 0, 3],
+          [4, 0, 0, 8, 0, 3, 0, 0, 1],
+          [7, 0, 0, 0, 2, 0, 0, 0, 6],
+          [0, 6, 0, 0, 0, 0, 2, 8, 0],
+          [0, 0, 0, 4, 1, 9, 0, 0, 5],
+          [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ],
+        addedDigits = [
+          [5, 3, 0, 0, 7, 0, 0, 0, 0],
+          [6, 0, 0, 1, 9, 5, 0, 0, 0],
+          [0, 9, 8, 0, 0, 0, 0, 6, 0],
+          [8, 0, 0, 0, 6, 0, 0, 0, 3],
+          [4, 0, 0, 8, 0, 3, 0, 0, 1],
+          [7, 0, 0, 0, 2, 0, 0, 0, 6],
+          [0, 6, 0, 0, 0, 0, 2, 8, 0],
+          [0, 0, 0, 4, 1, 9, 0, 0, 5],
+          [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ],
+        isScanned = true,
+        difficulty = "NA",
+        createdAt = DateTime.now(),
+        lastViewed = DateTime.now(),
+        isComplete = false;
+
+  Sudoku copy() {
+    return Sudoku(
+      List.generate(9, (i) => List<int>.from(originalSudoku[i])),
+      isScanned,
+      difficulty,
+    )
+      ..createdAt = createdAt
+      ..lastViewed = lastViewed
+      ..addedDigits = addedDigits != null
+          ? List.generate(9, (i) => List<int>.from(addedDigits![i]))
+          : null
+      ..isComplete = isComplete
+      ..finalAnswer = finalAnswer != null
+          ? List.generate(9, (i) => List<int>.from(finalAnswer![i]))
+          : null;
+  }
 }

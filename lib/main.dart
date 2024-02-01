@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
 import 'package:puzzlepro_app/pages/home.dart';
 import 'package:puzzlepro_app/pages/scan_sudoku.dart';
+import 'package:puzzlepro_app/pages/generate_sudoku.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -17,7 +18,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int screenIndex = ScreenSelected.home.value;
+  int screenIndex = ScreenSelected.generator.value;
   bool controllerInitialized = false;
   bool showMediumSizeLayout = false;
   bool showLargeSizeLayout = false;
@@ -83,13 +84,7 @@ class _AppState extends State<App> {
       case ScreenSelected.scanner:
         return const ImageProcessingPage();
       case ScreenSelected.generator:
-        return Home(
-          useLightMode: useLightMode,
-          useMaterial3: useMaterial3,
-          handleBrightnessChange: handleBrightnessChange,
-          handleColorSelect: handleColorSelect,
-        );
-      //   return const GeneratorPage();
+        return const SudokuGeneratorPage();
       case ScreenSelected.setting:
         return Home(
           useLightMode: useLightMode,
