@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_dart/sudoku_dart.dart';
 
 const hardnessLevels = ["easy", "medium", "hard", "very-hard"];
 
@@ -140,5 +141,8 @@ class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
         ],
       ),
     ));
+  }
+  generatorSudoku(int index){
+    Sudoku.generate(Level.values[index]);
   }
 }
