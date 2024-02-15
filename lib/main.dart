@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
+import 'package:puzzlepro_app/models/sudoku.dart';
+import 'package:puzzlepro_app/models/themeData.dart';
 import 'package:puzzlepro_app/pages/home.dart';
 import 'package:puzzlepro_app/pages/scan_sudoku.dart';
 import 'package:puzzlepro_app/pages/generate_sudoku.dart';
+import 'package:puzzlepro_app/services/database.dart';
 
 void main() async {
-  await Hive.initFlutter();
+  await StorageHelper.initializeHive();
   runApp(const App());
 }
 
@@ -18,7 +21,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int screenIndex = ScreenSelected.generator.value;
+  int screenIndex = ScreenSelected.home.value;
   bool controllerInitialized = false;
   bool showMediumSizeLayout = false;
   bool showLargeSizeLayout = false;
@@ -95,6 +98,7 @@ class _AppState extends State<App> {
       //   return const SettingsPage();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     var bottomNavigationBarItems = const <Widget>[
@@ -115,7 +119,6 @@ class _AppState extends State<App> {
         label: 'Settings',
       ),
     ];
-
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         themeMode: themeMode,

@@ -8,7 +8,7 @@ part of 'sudoku.dart';
 
 class SudokuAdapter extends TypeAdapter<Sudoku> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
   Sudoku read(BinaryReader reader) {
@@ -21,17 +21,21 @@ class SudokuAdapter extends TypeAdapter<Sudoku> {
       fields[5] as bool,
       fields[6] as String,
     )
+      ..createdAt = fields[1] as DateTime?
       ..addedDigits = (fields[2] as List?)
           ?.map((dynamic e) => (e as List).cast<int>())
           ?.toList()
       ..lastViewed = fields[3] as DateTime
-      ..isComplete = fields[4] as bool;
+      ..isComplete = fields[4] as bool
+      ..finalAnswer = (fields[7] as List?)
+          ?.map((dynamic e) => (e as List).cast<int>())
+          ?.toList();
   }
 
   @override
   void write(BinaryWriter writer, Sudoku obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.originalSudoku)
       ..writeByte(1)
@@ -45,7 +49,9 @@ class SudokuAdapter extends TypeAdapter<Sudoku> {
       ..writeByte(5)
       ..write(obj.isScanned)
       ..writeByte(6)
-      ..write(obj.difficulty);
+      ..write(obj.difficulty)
+      ..writeByte(7)
+      ..write(obj.finalAnswer);
   }
 
   @override

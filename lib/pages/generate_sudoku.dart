@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_dart/sudoku_dart.dart';
+import 'package:puzzlepro_app/Widgets/sudoku_board_widget.dart';
+import 'package:sudoku_dart/sudoku_dart.dart' as plugin;
+import 'package:puzzlepro_app/models/sudoku.dart';
 
 const hardnessLevels = ["easy", "medium", "hard", "very-hard"];
 
@@ -11,7 +13,11 @@ class SudokuGeneratorPage extends StatefulWidget {
 }
 
 class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
+  List<String> difficulties = ["Easy", "Medium", "Hard", "Very hard"];
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
+  bool isSudokuGenerated = false;
+  Sudoku generatedSudoku = Sudoku.empty();
+  int chosenDifficulty = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -20,129 +26,159 @@ class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _generatorCard()),
+          isSudokuGenerated ? _menu() : _generatorCard(),
         ],
       ),
     );
   }
 
-  Widget _menu(){
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ElevatedButton.icon(
-          onPressed: () {
-          },
-          icon: const Icon(Icons.restart_alt_rounded),
-          label: const Text("Try Again"),
-        ),
-          Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-              },
-              icon: const Icon(Icons.check_rounded),
-              label: const Text("Save and start"),
+  Widget _menu() {
+    return Expanded(
+      child: Center(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+              child: Text(
+                'Generated sudoku',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 27,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: FloatingActionButton(
-            heroTag: "save button",
-            onPressed: () {
-            },
-            backgroundColor: _colorScheme.onSecondary,
-            tooltip: 'Save',
-            child: const Icon(Icons.check_rounded, color: Colors.green),
-          ),
-        )
-      ],
+            Text(
+              'Difficulty ${difficulties[chosenDifficulty]}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            SudokuBoardWidget(
+                sudoku: generatedSudoku, colorScheme: _colorScheme),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    generatorSudoku(chosenDifficulty);
+                  },
+                  icon: const Icon(Icons.restart_alt_rounded),
+                  label: const Text("Try Again"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 32.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.check_rounded),
+                    label: const Text("Save and start"),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _generatorCard() {
-    return Center(
-        child: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 10.0),
-            child: Text(
-              'SudokuGenerator by PuzzlePro',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
+    return Expanded(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 10.0),
+              child: Text(
+                'SudokuGenerator by PuzzlePro',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 90.0),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size(330, 80), // Set the button size
+            const SizedBox(height: 90.0),
+            ElevatedButton(
+              onPressed: () {
+                generatorSudoku(0);
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(330, 80), // Set the button size
+              ),
+              child: const Text(
+                'Easy',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
-            // icon: const Icon(
-            //   Icons.camera_alt,
-            //   size: 30,
-            // ),
-            child: const Text(
-              'Easy',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                generatorSudoku(1);
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(330, 80), // Set the button size
+              ),
+              child: const Text(
+                'Medium',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size(330, 80), // Set the button size
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                generatorSudoku(2);
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(330, 80), // Set the button size
+              ),
+              child: const Text(
+                'Hard',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
-            // icon: const Icon(
-            //   Icons.camera_alt,
-            //   size: 30,
-            // ),
-            child: const Text(
-              'Medium',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                generatorSudoku(3);
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(330, 80), // Set the button size
+              ),
+              child: const Text(
+                'Very-Hard',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size(330, 80), // Set the button size
-            ),
-            // icon: const Icon(
-            //   Icons.camera_alt,
-            //   size: 30,
-            // ),
-            child: const Text(
-              'Hard',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size(330, 80), // Set the button size
-            ),
-            // icon: const Icon(
-            //   Icons.camera_alt,
-            //   size: 30,
-            // ),
-            child: const Text(
-              'Very-Hard',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
-    ));
+    );
   }
-  generatorSudoku(int index){
-    Sudoku.generate(Level.values[index]);
+
+  generatorSudoku(int index) {
+    var sudokuObject = plugin.Sudoku.generate(plugin.Level.values[index]);
+    var sudokuList = sudokuObject.puzzle;
+    var sudokuMatrix = List.generate(
+        9,
+        (i) => List<int>.generate(
+            9, (j) => -1 == sudokuList[i * 9 + j] ? 0 : sudokuList[i * 9 + j]));
+
+    setState(() {
+      generatedSudoku = Sudoku(sudokuMatrix, false, difficulties[index]);
+      generatedSudoku.addedDigits = List.filled(9, List.filled(9, 0));
+      isSudokuGenerated = true;
+      chosenDifficulty = index;
+    });
   }
 }

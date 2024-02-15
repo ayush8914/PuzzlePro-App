@@ -6,12 +6,13 @@ class SudokuWidget extends StatefulWidget {
     super.key,
     required this.sudoku,
     this.onSelected,
-    required this.listIndex,
+    required this.listIndex, required this.onDelete,
   });
 
   final void Function()? onSelected;
   final Sudoku sudoku;
   final int listIndex;
+  final Function() onDelete;
 
   @override
   State<SudokuWidget> createState() => _SudokuWidgetState();
@@ -39,6 +40,7 @@ class _SudokuWidgetState extends State<SudokuWidget> {
             SudokuHeadline(
               sudoku: widget.sudoku,
               index: widget.listIndex,
+              onDelete: widget.onDelete,
             ),
             SudokuContent(
               sudoku: widget.sudoku,
@@ -141,10 +143,11 @@ class SudokuHeadline extends StatefulWidget {
   const SudokuHeadline({
     super.key,
     required this.sudoku,
-    required this.index,
+    required this.index, required this.onDelete,
   });
 
   final Sudoku sudoku;
+  final Function() onDelete;
   final int index;
 
   @override
@@ -197,7 +200,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   width: 40,
                   child: FloatingActionButton(
                     heroTag: "DeleteButton${widget.index}",
-                    onPressed: () {},
+                    onPressed: widget.onDelete,
                     elevation: 0,
                     backgroundColor: _colorScheme.surface,
                     child: const Icon(Icons.delete_outline),

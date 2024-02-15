@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/pages/sudoku_answer.dart';
 import '../models/sudoku.dart';
+import '../services/database.dart';
 
 class SudokuHome extends StatefulWidget {
   final Sudoku sudoku;
@@ -202,7 +203,7 @@ class _SudokuHomeState extends State<SudokuHome> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Handle save progress button
+                      StorageHelper.saveSudoku(widget.sudoku);
                     },
                     child: const Icon(Icons.save_as_rounded),
                   ),

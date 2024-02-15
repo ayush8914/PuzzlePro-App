@@ -7,10 +7,12 @@ enum ItemFilter { all, incomplete, completed }
 
 class SudokuListView extends StatefulWidget {
   final List<Sudoku> sudokuList;
+  final Function(int) onDelete;
 
   const SudokuListView({
     super.key,
     required this.sudokuList,
+    required this.onDelete,
   });
 
   @override
@@ -99,6 +101,9 @@ class _SudokuListViewState extends State<SudokuListView> {
                           }))
                         },
                         key: widget.key,
+                        onDelete: () => {
+                          widget.onDelete(index),
+                        },
                       ),
                     );
                   },

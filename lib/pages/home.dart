@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_list.dart';
 import 'package:puzzlepro_app/models/sudoku.dart';
+import 'package:puzzlepro_app/services/database.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -23,12 +24,24 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
 
-  final List<Sudoku> sudokuList = [Sudoku.correct(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty()];
+  void deleteSudoku(int index) async{
+    StorageHelper.deleteSudokuById(index);
+    await fetchSudokuList();
+  }
+
+  fetchSudokuList() async{
+    var list = await StorageHelper.loadAllSudoku();
+    setState(() {
+      sudokuList = list;
+    });
+  }
+  List<Sudoku> sudokuList = [Sudoku.correct(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty()];
 
   @override
   Widget build(BuildContext context) {
+    fetchSudokuList();
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-      return SudokuListView(sudokuList: sudokuList);
+      return SudokuListView(sudokuList: sudokuList, onDelete: deleteSudoku);
   }
 }
