@@ -102,10 +102,6 @@ class _SudokuContentState extends State<SudokuContent> {
     return count == 1 ? unit : '${unit}s';
   }
 
-  String getOverviewOfDateTime(DateTime dateTime) {
-    return "Not implemented";
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -165,6 +161,24 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
         : const Icon(Icons.check_circle_rounded);
   }
 
+  getSudokuStatus() {
+    int total = 0, remaining = 0;
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (widget.sudoku.originalSudoku[i][j] == 0) {
+          total++;
+          if (widget.sudoku.addedDigits![i][j] == 0) {
+            remaining++;
+          }
+        }
+      }
+    }
+    if (total == 0) {
+      return "100";
+    }
+    return ((total - remaining) * 100) ~/ total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -186,7 +200,7 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "10% Completed",
+                      "${getSudokuStatus()}% Completed",
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                       style: TextStyle(

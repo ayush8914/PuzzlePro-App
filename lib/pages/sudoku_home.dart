@@ -74,6 +74,15 @@ class _SudokuHomeState extends State<SudokuHome> {
       );
     }));
   }
+  showSnackBar(){
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Sudoku Saved successfully.')),
+    );
+  }
+  void saveSudoku() async {
+    await StorageHelper.updateSudoku(sudoku, widget.index);
+    showSnackBar();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,9 +210,7 @@ class _SudokuHomeState extends State<SudokuHome> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      StorageHelper.saveSudoku(sudoku);
-                    },
+                    onPressed: saveSudoku,
                     child: const Icon(Icons.save_as_rounded),
                   ),
                   ElevatedButton(
