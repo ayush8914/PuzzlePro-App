@@ -6,7 +6,7 @@ import 'package:puzzlepro_app/pages/sudoku_home.dart';
 enum ItemFilter { all, incomplete, completed }
 
 class SudokuListView extends StatefulWidget {
-  final List<Sudoku> sudokuList;
+  final Map<dynamic, Sudoku> sudokuList;
   final Function(int) onDelete;
 
   const SudokuListView({
@@ -22,16 +22,18 @@ class SudokuListView extends StatefulWidget {
 class _SudokuListViewState extends State<SudokuListView> {
   ItemFilter currentFilter = ItemFilter.all;
 
-  List<Sudoku> getFilteredItems() {
+  Map<dynamic, Sudoku> getFilteredItems() {
     switch (currentFilter) {
       case ItemFilter.all:
-        return widget.sudokuList.toList();
+        return widget.sudokuList;
       case ItemFilter.incomplete:
-        return widget.sudokuList.where((item) => !item.isComplete).toList();
+        return Map.from(widget.sudokuList)
+          ..removeWhere((k, v) => v.isComplete == true);
       case ItemFilter.completed:
-        return widget.sudokuList.where((item) => item.isComplete).toList();
+        return Map.from(widget.sudokuList)
+          ..removeWhere((k, v) => v.isComplete == false);
       default:
-        return [];
+        return {};
     }
   }
 
@@ -87,22 +89,23 @@ class _SudokuListViewState extends State<SudokuListView> {
                 ...List.generate(
                   getFilteredItems().length,
                   (index) {
+                    int key = getFilteredItems().keys.elementAt(index);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: SudokuWidget(
-                        sudoku: getFilteredItems()[index],
+                        sudoku: getFilteredItems()[key] ?? Sudoku.empty(),
                         listIndex: index,
                         onSelected: () => {
                           Navigator.push(context, MaterialPageRoute(
                               builder: (BuildContext context) {
                             return SudokuHome(
-                              sudoku: getFilteredItems()[index],
+                              index: key,
                             );
                           }))
                         },
                         key: widget.key,
                         onDelete: () => {
-                          widget.onDelete(index),
+                          widget.onDelete(key),
                         },
                       ),
                     );
@@ -128,12 +131,11 @@ class FilterButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     required this.isSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return isSelected
         ? FilledButton(
             onPressed: onPressed,

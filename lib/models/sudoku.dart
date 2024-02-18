@@ -28,6 +28,8 @@ class Sudoku {
   @HiveField(7)
   List<List<int>>? finalAnswer;
 
+  int id = 0;
+
   Sudoku(this.originalSudoku, this.isScanned, this.difficulty)
       : createdAt = DateTime.now(),
         lastViewed = DateTime.now(),

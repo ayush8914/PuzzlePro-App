@@ -11,33 +11,56 @@ class StorageHelper {
     sudokuBox = await Hive.openBox<Sudoku>(sudokuBoxName);
   }
 
-  static Future<void> saveSudoku(Sudoku sudoku) async {
-    if(sudokuBox == null){
+  static Future<int> saveSudoku(Sudoku sudoku) async {
+    if (sudokuBox == null) {
       initializeHive();
     }
-    if(sudokuBox!.isOpen == true) {
+    if (sudokuBox!.isOpen == true) {
       final box = await Hive.openBox<Sudoku>(sudokuBoxName);
-      await box.add(sudoku);
+      return await box.add(sudoku);
+    }
+    return 0;
+  }
+
+  static Future<void> updateSudoku(Sudoku sudoku, dynamic index) async {
+    if (sudokuBox == null) {
+      initializeHive();
+    }
+    if (sudokuBox!.isOpen == true) {
+      final box = await Hive.openBox<Sudoku>(sudokuBoxName);
+      await box.put(index, sudoku);
     }
   }
 
-  static Future<List<Sudoku>> loadAllSudoku() async {
-    if(sudokuBox == null){
+  static Future<Sudoku?> getSudokuByIndex(dynamic index) async {
+    if (sudokuBox == null) {
       initializeHive();
     }
-    if(sudokuBox!.isOpen == true) {
+    if (sudokuBox!.isOpen == true) {
       final box = await Hive.openBox<Sudoku>(sudokuBoxName);
-      return box.values.toList();
+      return box.get(index);
     }
-    return List.empty();
+    return null;
   }
-  static Future<void> deleteSudokuById(int index) async {
-    if(sudokuBox == null){
+
+  static Future<Map<dynamic, Sudoku>> loadAllSudoku() async {
+    if (sudokuBox == null) {
       initializeHive();
     }
-    if(sudokuBox!.isOpen == true) {
+    if (sudokuBox!.isOpen == true) {
       final box = await Hive.openBox<Sudoku>(sudokuBoxName);
-      await box.deleteAt(index);
+      return box.toMap();
+    }
+    return {};
+  }
+
+  static Future<void> deleteSudokuById(dynamic index) async {
+    if (sudokuBox == null) {
+      initializeHive();
+    }
+    if (sudokuBox!.isOpen == true) {
+      final box = await Hive.openBox<Sudoku>(sudokuBoxName);
+      await box.delete(index);
     }
   }
 }

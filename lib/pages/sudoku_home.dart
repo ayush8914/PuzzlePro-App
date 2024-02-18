@@ -4,9 +4,9 @@ import '../models/sudoku.dart';
 import '../services/database.dart';
 
 class SudokuHome extends StatefulWidget {
-  final Sudoku sudoku;
+  final int index;
 
-  const SudokuHome({super.key, required this.sudoku});
+  const SudokuHome({super.key, required this.index});
 
   @override
   State<SudokuHome> createState() => _SudokuHomeState();
@@ -15,30 +15,31 @@ class SudokuHome extends StatefulWidget {
 class _SudokuHomeState extends State<SudokuHome> {
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
   final List<int> currentSelectedCell = [10, 10];
+  int isLoading = 0;
+  Sudoku sudoku = Sudoku.empty();
 
-  List<List<int>> originalSudoku = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9],
-  ];
+  List<List<int>> originalSudoku = List.filled(9, List.filled(9, 0)),
+      addedDigitsSudoku = List.filled(9, List.filled(9, 0));
 
-  List<List<int>> addedDigitsSudoku = [
-    [5, 3, 0, 3, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9],
-  ];
+  @override
+  void initState() {
+    super.initState();
+    Sudoku? tempSudoku;
+    setState(() {
+      isLoading = 1;
+    });
+    fetchSudoku();
+  }
+
+  fetchSudoku() async {
+    Sudoku? tempSudoku;
+    tempSudoku = await StorageHelper.getSudokuByIndex(widget.index);
+    setState(() {
+      sudoku = tempSudoku ?? Sudoku.empty();
+      originalSudoku = sudoku.originalSudoku;
+      addedDigitsSudoku = sudoku.addedDigits!;
+    });
+  }
 
   void setAddedDigit(int digit) {
     if (currentSelectedCell[0] > 9) {
@@ -67,20 +68,18 @@ class _SudokuHomeState extends State<SudokuHome> {
   }
 
   void solveSudoku() {
-    var tempSudoku = widget.sudoku;
-    tempSudoku.originalSudoku = addedDigitsSudoku;
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       return SudokuAnswer(
-        sudoku: tempSudoku,
+        sudoku: sudoku,
       );
     }));
   }
 
   @override
   Widget build(BuildContext context) {
-    originalSudoku = widget.sudoku.originalSudoku;
-    if (widget.sudoku.addedDigits != null) {
-      addedDigitsSudoku = widget.sudoku.addedDigits!;
+    originalSudoku = sudoku.originalSudoku;
+    if (sudoku.addedDigits != null) {
+      addedDigitsSudoku = sudoku.addedDigits!;
     }
     return Scaffold(
       appBar: AppBar(
@@ -203,7 +202,7 @@ class _SudokuHomeState extends State<SudokuHome> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      StorageHelper.saveSudoku(widget.sudoku);
+                      StorageHelper.saveSudoku(sudoku);
                     },
                     child: const Icon(Icons.save_as_rounded),
                   ),

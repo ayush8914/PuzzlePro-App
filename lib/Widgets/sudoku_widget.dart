@@ -6,7 +6,8 @@ class SudokuWidget extends StatefulWidget {
     super.key,
     required this.sudoku,
     this.onSelected,
-    required this.listIndex, required this.onDelete,
+    required this.listIndex,
+    required this.onDelete,
   });
 
   final void Function()? onSelected;
@@ -143,7 +144,8 @@ class SudokuHeadline extends StatefulWidget {
   const SudokuHeadline({
     super.key,
     required this.sudoku,
-    required this.index, required this.onDelete,
+    required this.index,
+    required this.onDelete,
   });
 
   final Sudoku sudoku;
@@ -155,7 +157,6 @@ class SudokuHeadline extends StatefulWidget {
 }
 
 class _SudokuHeadlineState extends State<SudokuHeadline> {
-  late final TextTheme _textTheme = Theme.of(context).textTheme;
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
 
   Widget getStatusIcon() {
@@ -188,8 +189,10 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                       "10% Completed",
                       maxLines: 1,
                       overflow: TextOverflow.fade,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: _colorScheme.primary),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: _colorScheme.primary),
                     ),
                   ],
                 ),

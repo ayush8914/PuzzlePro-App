@@ -23,7 +23,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
-
+  @override
+  void initState() {
+    super.initState();
+    fetchSudokuList();
+  }
   void deleteSudoku(int index) async{
     StorageHelper.deleteSudokuById(index);
     await fetchSudokuList();
@@ -35,11 +39,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       sudokuList = list;
     });
   }
-  List<Sudoku> sudokuList = [Sudoku.correct(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty(), Sudoku.empty()];
+  Map<dynamic, Sudoku> sudokuList = {};
 
   @override
   Widget build(BuildContext context) {
-    fetchSudokuList();
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
       return SudokuListView(sudokuList: sudokuList, onDelete: deleteSudoku);

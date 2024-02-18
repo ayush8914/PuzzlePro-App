@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/Widgets/sudoku_board_widget.dart';
+import 'package:puzzlepro_app/pages/sudoku_home.dart';
+import 'package:puzzlepro_app/services/database.dart';
 import 'package:sudoku_dart/sudoku_dart.dart' as plugin;
 import 'package:puzzlepro_app/models/sudoku.dart';
 
@@ -77,7 +79,7 @@ class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 32.0),
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: saveButton,
                     icon: const Icon(Icons.check_rounded),
                     label: const Text("Save and start"),
                   ),
@@ -164,6 +166,19 @@ class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
         ),
       ),
     );
+  }
+
+  sendToHome(int id) {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      return SudokuHome(
+        index: id,
+      );
+    }));
+  }
+
+  saveButton() async {
+    int id = await StorageHelper.saveSudoku(generatedSudoku);
+    sendToHome(id);
   }
 
   generatorSudoku(int index) {
