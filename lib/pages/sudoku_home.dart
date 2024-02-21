@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/pages/sudoku_answer.dart';
+import 'package:puzzlepro_app/pages/sudoku_check_answer.dart';
 import '../models/sudoku.dart';
 import '../services/database.dart';
 
@@ -134,14 +135,16 @@ class _SudokuHomeState extends State<SudokuHome> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle check answer button
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                      return SudokuAnswerChecker(
+                        sudoku: sudoku,
+                      );
+                    }));
                   },
                   child: Text(
                     "Check Answer",
                     style: TextStyle(
-                        color: false
-                            ? _colorScheme.primary
-                            : _colorScheme.secondary),
+                        color: _colorScheme.primary),
                   ),
                 ),
               ],

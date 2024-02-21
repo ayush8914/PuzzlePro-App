@@ -1,8 +1,9 @@
+
 ## Remaining things
 
-1. Sudoku check answer page and functionality.
-2. Settings page
-3. Sudoku validation page and functionality.
+1. ~~Sudoku check answer page and functionality. => Done~~
+2. Settings page. => Ayush currently working
+3. Sudoku validation page and functionality => Dhrumil currently working
 4. Share and export sudoku functionality 
 5. Handwritten sudoku validation and scan. 
 6. Transitions 
