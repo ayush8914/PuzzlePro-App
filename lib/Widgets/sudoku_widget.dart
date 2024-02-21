@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/sudoku.dart';
 
+const hardnessLevels = ["easy", "medium", "hard", "very hard"];
+
 class SudokuWidget extends StatefulWidget {
   const SudokuWidget({
     super.key,
@@ -157,8 +159,8 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
 
   Widget getStatusIcon() {
     return widget.sudoku.isComplete
-        ? const Icon(Icons.access_time_rounded)
-        : const Icon(Icons.check_circle_rounded);
+        ? const Icon(Icons.check_circle_rounded)
+        : const Icon(Icons.access_time_rounded);
   }
 
   getSudokuStatus() {
@@ -177,6 +179,44 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
       return "100";
     }
     return ((total - remaining) * 100) ~/ total;
+  }
+
+  Color _getHighPitchColorForDifficulty(String difficulty) {
+    if (hardnessLevels.contains(difficulty.toLowerCase())) {
+      switch (difficulty.toLowerCase()) {
+        case 'easy':
+          return Colors.green.withOpacity(0.8);
+        case 'medium':
+          return Colors.blue.withOpacity(0.8);
+        case 'hard':
+          return Colors.orange.withOpacity(0.8);
+        case 'very hard':
+          return Colors.red.withOpacity(0.8);
+        default:
+          return Colors.black.withOpacity(0.8);
+      }
+    } else {
+      return Colors.black.withOpacity(0.8);
+    }
+  }
+
+  Color _getLowPitchColorForDifficulty(String difficulty) {
+    if (hardnessLevels.contains(difficulty.toLowerCase())) {
+      switch (difficulty.toLowerCase()) {
+        case 'easy':
+          return Colors.green.withOpacity(0.1);
+        case 'medium':
+          return Colors.blue.withOpacity(0.1);
+        case 'hard':
+          return Colors.orange.withOpacity(0.1);
+        case 'very hard':
+          return Colors.red.withOpacity(0.1);
+        default:
+          return Colors.black.withOpacity(0.1);
+      }
+    } else {
+      return Colors.black.withOpacity(0.1);
+    }
   }
 
   @override
@@ -199,15 +239,47 @@ class _SudokuHeadlineState extends State<SudokuHeadline> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "${getSudokuStatus()}% Completed",
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: _colorScheme.primary),
-                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "${getSudokuStatus()}% Completed",
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: _colorScheme.primary),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        if (widget.sudoku.difficulty != "NA")
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(4,3,4,3),
+                            decoration: BoxDecoration(
+                              color: _getLowPitchColorForDifficulty(
+                                  widget.sudoku.difficulty),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: _getHighPitchColorForDifficulty(
+                                    widget.sudoku.difficulty),
+                                width: 2,
+                              ),
+                            ),
+                            child: Text(
+                              widget.sudoku.difficulty.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: _getHighPitchColorForDifficulty(
+                                    widget.sudoku.difficulty),
+                              ),
+                            ),
+                          ),
+                      ],
+                    )
                   ],
                 ),
               ),

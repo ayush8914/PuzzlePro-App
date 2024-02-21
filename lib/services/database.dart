@@ -38,7 +38,10 @@ class StorageHelper {
     }
     if (sudokuBox!.isOpen == true) {
       final box = await Hive.openBox<Sudoku>(sudokuBoxName);
-      return box.get(index);
+      var sudoku = box.get(index)!.copy();
+      sudoku.lastViewed = DateTime.now();
+      await updateSudoku(sudoku, index);
+      return sudoku.copy();
     }
     return null;
   }

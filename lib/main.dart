@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:puzzlepro_app/Data/constants.dart';
-import 'package:puzzlepro_app/models/sudoku.dart';
-import 'package:puzzlepro_app/models/themeData.dart';
 import 'package:puzzlepro_app/pages/home.dart';
 import 'package:puzzlepro_app/pages/scan_sudoku.dart';
 import 'package:puzzlepro_app/pages/generate_sudoku.dart';
@@ -57,6 +54,15 @@ class _AppState extends State<App> {
     });
   }
 
+  void handleScreenChange(int index, String message) {
+    setState(() {
+      screenIndex = index;
+    });
+    if (message != "") {
+      //some logic to show snake-bar
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -87,7 +93,9 @@ class _AppState extends State<App> {
       case ScreenSelected.scanner:
         return const ImageProcessingPage();
       case ScreenSelected.generator:
-        return const SudokuGeneratorPage();
+        return SudokuGeneratorPage(
+          handleScreenChange: handleScreenChange,
+        );
       case ScreenSelected.setting:
         return Home(
           useLightMode: useLightMode,

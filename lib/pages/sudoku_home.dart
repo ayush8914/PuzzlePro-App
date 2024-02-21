@@ -18,17 +18,16 @@ class _SudokuHomeState extends State<SudokuHome> {
   int isLoading = 0;
   Sudoku sudoku = Sudoku.empty();
 
-  List<List<int>> originalSudoku = List.filled(9, List.filled(9, 0)),
-      addedDigitsSudoku = List.filled(9, List.filled(9, 0));
-
   @override
   void initState() {
     super.initState();
-    Sudoku? tempSudoku;
     setState(() {
       isLoading = 1;
     });
     fetchSudoku();
+    setState(() {
+      sudoku.lastViewed = DateTime.now();
+    });
   }
 
   fetchSudoku() async {
@@ -36,8 +35,6 @@ class _SudokuHomeState extends State<SudokuHome> {
     tempSudoku = await StorageHelper.getSudokuByIndex(widget.index);
     setState(() {
       sudoku = tempSudoku ?? Sudoku.empty();
-      originalSudoku = sudoku.originalSudoku;
-      addedDigitsSudoku = sudoku.addedDigits!;
     });
   }
 
@@ -46,14 +43,15 @@ class _SudokuHomeState extends State<SudokuHome> {
       return;
     }
     setState(() {
-      addedDigitsSudoku[currentSelectedCell[0]][currentSelectedCell[1]] = digit;
+      sudoku.addedDigits![currentSelectedCell[0]][currentSelectedCell[1]] =
+          digit;
     });
   }
 
   void onClearPress() {
     setState(() {
-      addedDigitsSudoku[currentSelectedCell[0]][currentSelectedCell[1]] =
-          originalSudoku[currentSelectedCell[0]][currentSelectedCell[1]];
+      sudoku.addedDigits![currentSelectedCell[0]][currentSelectedCell[1]] =
+          sudoku.originalSudoku[currentSelectedCell[0]][currentSelectedCell[1]];
     });
   }
 
@@ -61,7 +59,7 @@ class _SudokuHomeState extends State<SudokuHome> {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
         setState(() {
-          addedDigitsSudoku[i][j] = originalSudoku[i][j];
+          sudoku.addedDigits![i][j] = sudoku.originalSudoku[i][j];
         });
       }
     }
@@ -74,11 +72,13 @@ class _SudokuHomeState extends State<SudokuHome> {
       );
     }));
   }
-  showSnackBar(){
+
+  showSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Sudoku Saved successfully.')),
     );
   }
+
   void saveSudoku() async {
     await StorageHelper.updateSudoku(sudoku, widget.index);
     showSnackBar();
@@ -86,10 +86,6 @@ class _SudokuHomeState extends State<SudokuHome> {
 
   @override
   Widget build(BuildContext context) {
-    originalSudoku = sudoku.originalSudoku;
-    if (sudoku.addedDigits != null) {
-      addedDigitsSudoku = sudoku.addedDigits!;
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -161,12 +157,13 @@ class _SudokuHomeState extends State<SudokuHome> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 9,
                 ),
-                itemCount: originalSudoku.length * originalSudoku[0].length,
+                itemCount: sudoku.originalSudoku.length *
+                    sudoku.originalSudoku[0].length,
                 itemBuilder: (context, index) {
                   int row = index ~/ 9;
                   int col = index % 9;
-                  int originalCellValue = originalSudoku[row][col];
-                  int addedDigitsCellValue = addedDigitsSudoku[row][col];
+                  int originalCellValue = sudoku.originalSudoku[row][col];
+                  int addedDigitsCellValue = sudoku.addedDigits![row][col];
 
                   return SudokuCell(
                     originalValue: originalCellValue,

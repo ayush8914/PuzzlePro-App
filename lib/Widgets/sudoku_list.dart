@@ -8,11 +8,13 @@ enum ItemFilter { all, incomplete, completed }
 class SudokuListView extends StatefulWidget {
   final Map<dynamic, Sudoku> sudokuList;
   final Function(int) onDelete;
+  final Future<void> Function() onRefresh;
 
   const SudokuListView({
     super.key,
     required this.sudokuList,
     required this.onDelete,
+    required this.onRefresh,
   });
 
   @override
@@ -82,36 +84,69 @@ class _SudokuListViewState extends State<SudokuListView> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView(
-              children: [
-                const SizedBox(height: 8),
-                const SizedBox(height: 8),
-                ...List.generate(
-                  getFilteredItems().length,
-                  (index) {
-                    int key = getFilteredItems().keys.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: SudokuWidget(
-                        sudoku: getFilteredItems()[key] ?? Sudoku.empty(),
-                        listIndex: index,
-                        onSelected: () => {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return SudokuHome(
-                              index: key,
+            child: RefreshIndicator(
+              onRefresh: widget.onRefresh,
+              child: getFilteredItems().isNotEmpty
+                  ? ListView(
+                      children: [
+                        const SizedBox(height: 8),
+                        const SizedBox(height: 8),
+                        ...List.generate(
+                          getFilteredItems().length,
+                          (index) {
+                            int key = getFilteredItems().keys.elementAt(index);
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: SudokuWidget(
+                                sudoku:
+                                    getFilteredItems()[key] ?? Sudoku.empty(),
+                                listIndex: index,
+                                onSelected: () => {
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                    return SudokuHome(
+                                      index: key,
+                                    );
+                                  }))
+                                },
+                                key: widget.key,
+                                onDelete: () => {
+                                  widget.onDelete(key),
+                                },
+                              ),
                             );
-                          }))
-                        },
-                        key: widget.key,
-                        onDelete: () => {
-                          widget.onDelete(key),
-                        },
+                          },
+                        ),
+                      ],
+                    )
+                  : const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline_rounded,
+                              size: 80.0,
+                            ),
+                            SizedBox(height: 16.0),
+                            Text(
+                              'No sudoku to display',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              'Your collection is empty. Add some sudoku to get started.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
             ),
           ),
         ),

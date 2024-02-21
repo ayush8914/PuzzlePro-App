@@ -33,7 +33,7 @@ class Sudoku {
   Sudoku(this.originalSudoku, this.isScanned, this.difficulty)
       : createdAt = DateTime.now(),
         lastViewed = DateTime.now(),
-        addedDigits = List.generate(9, (index) => List<int>.filled(9, 0)),
+        addedDigits = originalSudoku,
         isComplete = false;
 
   Sudoku.empty()

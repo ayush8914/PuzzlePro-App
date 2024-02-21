@@ -8,7 +8,9 @@ import 'package:puzzlepro_app/models/sudoku.dart';
 const hardnessLevels = ["easy", "medium", "hard", "very-hard"];
 
 class SudokuGeneratorPage extends StatefulWidget {
-  const SudokuGeneratorPage({super.key});
+  const SudokuGeneratorPage({super.key, required this.handleScreenChange});
+
+  final Function(int, String) handleScreenChange;
 
   @override
   State<SudokuGeneratorPage> createState() => _SudokuGeneratorPageState();
@@ -191,7 +193,6 @@ class _SudokuGeneratorPageState extends State<SudokuGeneratorPage> {
 
     setState(() {
       generatedSudoku = Sudoku(sudokuMatrix, false, difficulties[index]);
-      generatedSudoku.addedDigits = List.filled(9, List.filled(9, 0));
       isSudokuGenerated = true;
       chosenDifficulty = index;
     });
