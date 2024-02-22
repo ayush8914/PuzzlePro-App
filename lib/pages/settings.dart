@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key, required this.changeTheme}) : super(key: key);
+  const SettingsPage({super.key, required this.changeTheme});
+
   final Function(int) changeTheme;
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {

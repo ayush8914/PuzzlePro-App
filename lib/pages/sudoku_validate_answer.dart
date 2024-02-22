@@ -159,6 +159,31 @@ class _SudokuValidatorState extends State<SudokuValidator> {
     }
   }
 
+  showCorrectedDigits() {
+    if (widget.sudoku.finalAnswer == null) {
+      generateAnswer();
+    }
+    if (isEqual(widget.sudoku.finalAnswer!, widget.sudoku.addedDigits!)) {
+      setState(() {
+        status = "Correctly filled";
+      });
+    } else {
+      setState(() {
+        status = "Wrong filled";
+        stateOfSudoku = 2;
+      });
+    }
+  }
+
+  showCorrectDigitsForEmptyPlace() {
+    if (widget.sudoku.finalAnswer == null) {
+      generateAnswer();
+    }
+    setState(() {
+      stateOfSudoku = 3;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var temp = widget.sudoku.copy();
@@ -182,15 +207,16 @@ class _SudokuValidatorState extends State<SudokuValidator> {
         children: [
           const SizedBox(height: 10.0),
           ElevatedButton(
-              onPressed: checkAnswer, child: const Text("Validate sudoku")),
+              onPressed: checkAnswer,
+              child: const Text("Just validate sudoku")),
           ElevatedButton(
               onPressed: checkAnswerForWrongDigits,
               child: const Text("Show wrong digits")),
           ElevatedButton(
-              onPressed: checkAnswer,
+              onPressed: showCorrectedDigits,
               child: const Text("Show correct digits for wrong digits")),
           ElevatedButton(
-              onPressed: checkAnswer,
+              onPressed: showCorrectDigitsForEmptyPlace,
               child: const Text("Show correct digits for empty space")),
           const SizedBox(height: 30.0),
           SizedBox(
@@ -260,7 +286,7 @@ class SudokuCellWithFinal extends StatelessWidget {
       return Colors.transparent;
     }
     if (stateOfBoard == 1) {
-      if (finalAnswer != addedDigitsValue) {
+      if (finalAnswer != addedDigitsValue && addedDigitsValue != 0) {
         return colorScheme.error.withOpacity(0.1);
       }
     } else if (stateOfBoard == 2) {
@@ -280,11 +306,11 @@ class SudokuCellWithFinal extends StatelessWidget {
       return colorScheme.secondary;
     }
     if (stateOfBoard == 1) {
-      if (finalAnswer != addedDigitsValue) {
+      if (finalAnswer != addedDigitsValue && addedDigitsValue != 0) {
         return Colors.red;
       }
     } else if (stateOfBoard == 2) {
-      if (finalAnswer != addedDigitsValue) {
+      if (finalAnswer != addedDigitsValue && addedDigitsValue != 0) {
         return Colors.green;
       }
     } else if (stateOfBoard == 3) {
@@ -295,20 +321,23 @@ class SudokuCellWithFinal extends StatelessWidget {
     return colorScheme.primary;
   }
 
-  getValue() {
+  String getValue() {
     if (originalValue != 0) {
-      return originalValue;
+      return originalValue.toString();
     }
     if (stateOfBoard == 2) {
-      if (finalAnswer != addedDigitsValue) {
-        return finalAnswer;
+      if (finalAnswer != addedDigitsValue && addedDigitsValue != 0) {
+        return finalAnswer.toString();
       }
     } else if (stateOfBoard == 3) {
       if (0 == addedDigitsValue) {
-        return finalAnswer;
+        return finalAnswer.toString();
       }
     }
-    return addedDigitsValue;
+    if (addedDigitsValue != 0) {
+      return addedDigitsValue.toString();
+    }
+    return "";
   }
 
   @override
@@ -318,11 +347,7 @@ class SudokuCellWithFinal extends StatelessWidget {
       child: Center(
         child: Center(
           child: Text(
-            originalValue != 0
-                ? '$originalValue'
-                : addedDigitsValue != 0
-                    ? '$addedDigitsValue'
-                    : '',
+            getValue().toString(),
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
