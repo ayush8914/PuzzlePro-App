@@ -4,6 +4,7 @@ import 'package:puzzlepro_app/pages/home.dart';
 import 'package:puzzlepro_app/pages/scan_sudoku.dart';
 import 'package:puzzlepro_app/pages/generate_sudoku.dart';
 import 'package:puzzlepro_app/services/database.dart';
+import 'package:puzzlepro_app/pages/settings.dart';
 
 void main() async {
   await StorageHelper.initializeHive();
@@ -26,20 +27,33 @@ class _AppState extends State<App> {
   String title = "PuzzlePro";
 
   bool useMaterial3 = true;
-  ThemeMode themeMode = ThemeMode.system;
+  ThemeMode themeMode = ThemeMode.dark;
   ColorSeed colorSelected = ColorSeed.teal;
   ColorScheme? colorScheme = const ColorScheme.highContrastDark();
 
-  bool get useLightMode {
-    switch (themeMode) {
-      case ThemeMode.system:
+
+
+
+  bool useLightMode(int theme) {
+    switch (theme) {
+      case 0:
+        setState(() {
+          themeMode = ThemeMode.system;
+        });
         return View.of(context).platformDispatcher.platformBrightness ==
             Brightness.light;
-      case ThemeMode.light:
-        return true;
-      case ThemeMode.dark:
+      case 1:
+        setState(() {
+          themeMode = ThemeMode.light;
+        });
+        return true;  
+      case 2:
+        setState(() {
+          themeMode = ThemeMode.dark;
+        });
         return false;
     }
+    return false;
   }
 
   void handleBrightnessChange(bool useLightMode) {
@@ -85,7 +99,7 @@ class _AppState extends State<App> {
     switch (screenSelected) {
       case ScreenSelected.home:
         return Home(
-          useLightMode: useLightMode,
+
           useMaterial3: useMaterial3,
           handleBrightnessChange: handleBrightnessChange,
           handleColorSelect: handleColorSelect,
@@ -97,12 +111,7 @@ class _AppState extends State<App> {
           handleScreenChange: handleScreenChange,
         );
       case ScreenSelected.setting:
-        return Home(
-          useLightMode: useLightMode,
-          useMaterial3: useMaterial3,
-          handleBrightnessChange: handleBrightnessChange,
-          handleColorSelect: handleColorSelect,
-        );
+        return SettingsPage(changeTheme: useLightMode,);
       //   return const SettingsPage();
     }
   }
