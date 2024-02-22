@@ -6,13 +6,13 @@ import 'package:puzzlepro_app/services/database.dart';
 class Home extends StatefulWidget {
   const Home({
     super.key,
-    required this.useLightMode,
+
     required this.useMaterial3,
     required this.handleBrightnessChange,
     required this.handleColorSelect,
   });
 
-  final bool useLightMode;
+
   final bool useMaterial3;
   final void Function(bool useLightMode) handleBrightnessChange;
   final void Function(int value) handleColorSelect;
