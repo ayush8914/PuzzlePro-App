@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:puzzlepro_app/pages/sudoku_answer.dart';
 import 'package:puzzlepro_app/pages/sudoku_check_answer.dart';
+import 'package:puzzlepro_app/pages/sudoku_validate_answer.dart';
 import '../models/sudoku.dart';
 import '../services/database.dart';
 
@@ -227,7 +228,11 @@ class _SudokuHomeState extends State<SudokuHome> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle validate sudoku button
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                        return SudokuValidator(
+                          sudoku: sudoku,
+                        );
+                      }));
                     },
                     child: const Icon(Icons.lightbulb_outline_rounded),
                   ),

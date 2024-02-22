@@ -10,19 +10,19 @@ class Tuple2<A, B> {
 
 List<int> digits = List.generate(9, (index) => index + 1);
 
-class SudokuAnswerChecker extends StatefulWidget {
+class SudokuValidator extends StatefulWidget {
   final Sudoku sudoku;
 
-  const SudokuAnswerChecker({super.key, required this.sudoku});
+  const SudokuValidator({super.key, required this.sudoku});
 
   @override
-  State<SudokuAnswerChecker> createState() => _SudokuAnswerCheckerState();
+  State<SudokuValidator> createState() => _SudokuValidatorState();
 }
 
-class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
+class _SudokuValidatorState extends State<SudokuValidator> {
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
   final List<int> currentSelectedCell = [10, 10];
-  String buttonText = "Check answer";
+  int stateOfSudoku = 0;
   String status = "----";
 
   List<List<int>> originalSudoku =
@@ -104,27 +104,8 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
         answer = solveAll(originalSudoku).item2;
         widget.sudoku.finalAnswer = answer;
       }
-      buttonText = "Done";
     });
     return answer;
-  }
-
-  checkAllDigitsAdded() {
-    bool isAllFilled = true;
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
-        if (addedDigitsSudoku[i][j] == 0) {
-          isAllFilled = false;
-        }
-      }
-    }
-    if (!isAllFilled) {
-      setState(() {
-        status = "All digits not filled";
-      });
-      return false;
-    }
-    return true;
   }
 
   bool isEqual(List<List<int>> list1, List<List<int>> list2) {
@@ -138,7 +119,7 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
       }
 
       for (int j = 0; j < list1[i].length; j++) {
-        if (list1[i][j] != list2[i][j]) {
+        if (list1[i][j] != list2[i][j] && list1[i][j] != 0) {
           return false;
         }
       }
@@ -148,19 +129,33 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
   }
 
   checkAnswer() {
-    if (checkAllDigitsAdded()) {
-      if (widget.sudoku.finalAnswer == null) {
-        generateAnswer();
-      }
-      if (isEqual(widget.sudoku.finalAnswer!, widget.sudoku.addedDigits!)) {
-        setState(() {
-          status = "Answer is right";
-        });
-      } else {
-        setState(() {
-          status = "Answer is wrong,\n you can use validator for help";
-        });
-      }
+    if (widget.sudoku.finalAnswer == null) {
+      generateAnswer();
+    }
+    if (isEqual(widget.sudoku.finalAnswer!, widget.sudoku.addedDigits!)) {
+      setState(() {
+        status = "Correctly filled";
+      });
+    } else {
+      setState(() {
+        status = "Wrong filled";
+      });
+    }
+  }
+
+  checkAnswerForWrongDigits() {
+    if (widget.sudoku.finalAnswer == null) {
+      generateAnswer();
+    }
+    if (isEqual(widget.sudoku.finalAnswer!, widget.sudoku.addedDigits!)) {
+      setState(() {
+        status = "Correctly filled";
+      });
+    } else {
+      setState(() {
+        status = "Wrong filled";
+        stateOfSudoku = 1;
+      });
     }
   }
 
@@ -173,32 +168,12 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Check answer",
+          "Validate answer",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 30.0,
           ),
         ),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == "share") {
-              } else if (value == "delete") {}
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: "share",
-                  child: Text("Share"),
-                ),
-                const PopupMenuItem<String>(
-                  value: "delete",
-                  child: Text("Delete"),
-                ),
-              ];
-            },
-          ),
-        ],
       ),
       body: Center(
           child: Column(
@@ -206,7 +181,17 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: 10.0),
-          ElevatedButton(onPressed: checkAnswer, child: Text(buttonText)),
+          ElevatedButton(
+              onPressed: checkAnswer, child: const Text("Validate sudoku")),
+          ElevatedButton(
+              onPressed: checkAnswerForWrongDigits,
+              child: const Text("Show wrong digits")),
+          ElevatedButton(
+              onPressed: checkAnswer,
+              child: const Text("Show correct digits for wrong digits")),
+          ElevatedButton(
+              onPressed: checkAnswer,
+              child: const Text("Show correct digits for empty space")),
           const SizedBox(height: 30.0),
           SizedBox(
             width: 350.0,
@@ -223,11 +208,16 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
                   int col = index % 9;
                   int originalCellValue = originalSudoku[row][col];
                   int addedDigitsCellValue = addedDigitsSudoku[row][col];
+                  int finalValue = widget.sudoku.finalAnswer != null
+                      ? widget.sudoku.finalAnswer![row][col]
+                      : 0;
 
-                  return SudokuCell(
+                  return SudokuCellWithFinal(
                     originalValue: originalCellValue,
                     addedDigitsValue: addedDigitsCellValue,
                     colorScheme: _colorScheme,
+                    finalAnswer: finalValue,
+                    stateOfBoard: stateOfSudoku,
                   );
                 },
               ),
@@ -249,25 +239,82 @@ class _SudokuAnswerCheckerState extends State<SudokuAnswerChecker> {
   }
 }
 
-class SudokuCell extends StatelessWidget {
+class SudokuCellWithFinal extends StatelessWidget {
   final ColorScheme colorScheme;
   final int originalValue;
   final int addedDigitsValue;
+  final int finalAnswer;
+  final int stateOfBoard;
 
-  const SudokuCell({
+  const SudokuCellWithFinal({
     super.key,
     required this.originalValue,
     required this.addedDigitsValue,
     required this.colorScheme,
+    required this.finalAnswer,
+    required this.stateOfBoard,
   });
+
+  getBoxColor() {
+    if (originalValue != 0) {
+      return Colors.transparent;
+    }
+    if (stateOfBoard == 1) {
+      if (finalAnswer != addedDigitsValue) {
+        return colorScheme.error.withOpacity(0.1);
+      }
+    } else if (stateOfBoard == 2) {
+      if (finalAnswer != addedDigitsValue) {
+        return Colors.green.withOpacity(0.1);
+      }
+    } else if (stateOfBoard == 3) {
+      if (0 == addedDigitsValue) {
+        return Colors.green.withOpacity(0.1);
+      }
+    }
+    return colorScheme.primary.withOpacity(0.05);
+  }
+
+  getVariableColor() {
+    if (originalValue != 0) {
+      return colorScheme.secondary;
+    }
+    if (stateOfBoard == 1) {
+      if (finalAnswer != addedDigitsValue) {
+        return Colors.red;
+      }
+    } else if (stateOfBoard == 2) {
+      if (finalAnswer != addedDigitsValue) {
+        return Colors.green;
+      }
+    } else if (stateOfBoard == 3) {
+      if (0 == addedDigitsValue) {
+        return Colors.green;
+      }
+    }
+    return colorScheme.primary;
+  }
+
+  getValue() {
+    if (originalValue != 0) {
+      return originalValue;
+    }
+    if (stateOfBoard == 2) {
+      if (finalAnswer != addedDigitsValue) {
+        return finalAnswer;
+      }
+    } else if (stateOfBoard == 3) {
+      if (0 == addedDigitsValue) {
+        return finalAnswer;
+      }
+    }
+    return addedDigitsValue;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: originalValue != 0
-              ? Colors.transparent
-              : colorScheme.primary.withOpacity(0.05)),
+      decoration: BoxDecoration(color: getBoxColor()),
       child: Center(
         child: Center(
           child: Text(
@@ -279,9 +326,7 @@ class SudokuCell extends StatelessWidget {
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
-              color: originalValue != 0
-                  ? colorScheme.secondary
-                  : colorScheme.primary,
+              color: getVariableColor(),
             ),
           ),
         ),

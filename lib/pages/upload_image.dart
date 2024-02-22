@@ -95,7 +95,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
               .map((row) => List<int>.from(row))
               .toList();
           if (!context.mounted) return;
-          Sudoku sudoku = Sudoku(matrix, true, "Normal");
+          Sudoku sudoku = Sudoku(matrix, true, "NA");
           StorageHelper.saveSudoku(sudoku).then((value) => Navigator.push(
                   context, MaterialPageRoute(builder: (BuildContext context) {
                 return SudokuHome(
